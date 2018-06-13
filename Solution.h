@@ -64,10 +64,6 @@ class Solution{
     double total_solution_cost;
     VehicleTrips createMultipleTrip(VehicleTrips &mtrip, Problem &p,LoadRequest &Req);
     void displaySolution();
-
-
-
-
 };
 
 

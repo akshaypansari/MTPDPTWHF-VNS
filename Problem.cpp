@@ -5,6 +5,7 @@
 #include <cstring>
 #include <iostream>
 #include <algorithm>
+#include <ctime>
 using namespace std;
 Problem::Problem()
 {
@@ -236,18 +237,33 @@ bool compare_duration(Minduration const& r1,Minduration const& r2)
 }
 void Problem::SortRequest()
 {
+    int static seedtemp=300   ;
+   // srand(time(NULL));//changes    
+    srand(seedtemp++);
     vector<Minduration> Min(num_of_request);
+    vector<int> Randomnumber(num_of_request);
+    for(auto i=0;i<num_of_request;i++)
+    {
+        Randomnumber[i]=i+1;
+    }
+    int totalrequests=num_of_request;    
     for(int i=0;i<num_of_request;i++)
     {
-        //Minduration M;
-        Min[i].id=requests[i].rid;//id has the customer real id number and not index
-        Min[i].duration=std::min(requests[i].pickup.end_time-requests[i].pickup.start_time,requests[i].delivery.end_time-requests[i].delivery.start_time);
+        Minduration M;
+        int index= rand()%totalrequests;    
+        Min[i].id=Randomnumber[index];
+        totalrequests--;
+        Randomnumber.erase(Randomnumber.begin()+index);
+        // Min[i].id=requests[i].rid;//id has the customer real id number and not index
+        // Min[i].duration=std::min(requests[i].pickup.end_time-requests[i].pickup.start_time,requests[i].delivery.end_time-requests[i].delivery.start_time);
+
        // cout<<"id"<<Min[i].id<<"dur"<<Min[i].duration<<endl;
        //Min.push_back(M);
     }
 //   cout<<"sortreq"<<endl;
-    std::sort(Min.begin(),Min.end(),compare_duration);
 //   cout<<"sr2"<<endl;
+    // std::sort(Min.begin(),Min.end(),compare_duration);
+
     for(int i=0;i<num_of_request;i++)
     {
         cout<<Min[i].id<<" dur= "<<Min[i].duration<<endl;

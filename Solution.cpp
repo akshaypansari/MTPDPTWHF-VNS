@@ -3,6 +3,7 @@
 #include "LoadRequest.h"
 #include <iostream>
 #include <algorithm>
+#include <stdlib.h>
 
 #include <vector>
 using std::vector;
@@ -37,7 +38,7 @@ SingleTrip::~SingleTrip(){}
 
 double SingleTrip::Calculate_Trip_Distance(const Problem& p)
 {
-    cout<<"ST"<<" ";
+    //cout<<"ST"<<" ";
     trip_distance=0;
     for(unsigned i=1;i<cust_id.size();i++)
         trip_distance+=p.distance[cust_id[i]][cust_id[i-1]];
@@ -57,10 +58,10 @@ double VehicleTrips::Calculate_Cost_of_MultiTrip(const Problem& p)
     cost_of_vehicletrip=TripVehicle.fixed_cost;
     for(auto tripiterator=Multi.begin();tripiterator!=Multi.end();tripiterator++)
     {
-        cout<<"VT"<<endl;
-        cout<<*tripiterator<<endl;
-        cout<<"hi"<<TripVehicle.variable_cost;
-        cout<<"GlobalTrips[*tripiterator].Calculate_Trip_Distance(p)"<<GlobalTrips[*tripiterator].Calculate_Trip_Distance(p)<<endl;
+      //  cout<<"VT"<<endl;
+       // cout<<*tripiterator<<endl;
+        //cout<<"hi"<<TripVehicle.variable_cost;
+        //cout<<"GlobalTrips[*tripiterator].Calculate_Trip_Distance(p)"<<GlobalTrips[*tripiterator].Calculate_Trip_Distance(p)<<endl;
         cost_of_vehicletrip+=(GlobalTrips[*tripiterator].Calculate_Trip_Distance(p))*TripVehicle.variable_cost;
     }
     return cost_of_vehicletrip;
@@ -111,6 +112,7 @@ void Solution::Calculate_Solution_Cost(const Problem& p)
     for(auto Vehicletripiterator=MTrips.begin();Vehicletripiterator!=MTrips.end();Vehicletripiterator++)
     {
         total_solution_cost+=C2*(Vehicletripiterator->Calculate_Cost_of_MultiTrip(p));
+        cout<<"hi"<<endl;
     }    
     total_solution_cost+=C1*unrouted_cust_request_id.size();
     cout<<"Total Solution Cost   "<<total_solution_cost<<"*********----------"<<endl;
