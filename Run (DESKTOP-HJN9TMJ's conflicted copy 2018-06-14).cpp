@@ -34,10 +34,10 @@ void Run::RunMTPDPTWHF(std::string filename, int seed)
 
     Solution Sbest;
     Sbest.total_solution_cost=1000000000;
-    std::srand(seed);
 
     for(int t=0;t<1;t++)
     {   
+    std::srand(seed);
     Problem p;
     p.LoadProblem(fname);
     p.p_seed=seed;
@@ -48,37 +48,23 @@ void Run::RunMTPDPTWHF(std::string filename, int seed)
     Solution S_init;
     S_init=I.InitialSolve(p,S_init);
     S_init.Calculate_Solution_Cost(p);
-    if(S_init.total_solution_cost==0)
-    {
-        cout<<"There is sthg wrong"<<endl;
-        exit(0);
-    }
-    //GlobalTrips.clear();
-    if(S_init.total_solution_cost<Sbest.total_solution_cost)
-        {
-            Sbest=S_init;
-            cout<<"t value "<<t<<endl;
-        }
+    S_init.displaySolution();
+    // if(S_init.total_solution_cost==0)
+    // {
+    //     cout<<"There is sthg wrong"<<endl;
+    //     exit(0);
+    // }
+    // GlobalTrips.clear();
+    // if(S_init.total_solution_cost<Sbest.total_solution_cost)
+    //     {
+    //         Sbest=S_init;
+    //     }
     //cout<< "hi///// "<<Sbest.total_solution_cost<<endl;    
         
     }
-    Sbest.displaySolution();
-    cout<<"Total Cost"<<Sbest.total_solution_cost<<endl;    
-
-    
-    // Problem p;
-    // p.LoadProblem(fname);
-    // p.p_seed=seed;
-    // Solution S_init;
-    // InitialSolution I;
-    // S_init=I.InitialSolve(p,S_init);
-    // S_init.Calculate_Solution_Cost(p);
-    // cout<<"Total Cost"<<S_init.total_solution_cost<<endl; 
- 
-    // InitialSolution I;
     //Sbest.Calculate_Solution_Cost(p);
    // Sbest.displaySolution();
-       
+    cout<< "hi///// "<<Sbest.total_solution_cost<<endl;    
 
   /*  Solution S;
     S=Initial_Solution(p);*/

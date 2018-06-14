@@ -137,7 +137,7 @@ void Solution::displaySolution()
             //we can also make a display function for singletrip
             k++;      
             SingleTrip& temps=GlobalTrips[j];
-            
+            cout<<"The vehicle Type is "<<MTrips[i].TripVehicle.type<<endl;
             if(!temps.islunchtrip)
             {
                 cout<<"This is the Trip Number "<<k;
