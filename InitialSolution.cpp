@@ -25,7 +25,6 @@ ostream& operator<< (ostream& out, const vector<SingleTrip> v) {
     cout<<endl;
     return out;
 }
-
 ostream& operator<< (ostream& out, const vector<VehicleTrips> v) {
     out << "{";
     size_t last = v.size() - 1;
@@ -47,7 +46,7 @@ ostream& operator<< (ostream& out, const vector<VehicleTrips> v) {
 //also we don't need to 
 
 extern vector<SingleTrip> GlobalTrips;
-bool ShrinkTrip_FeasiblityCheckingforSingleTrip(int tripindex,int pindex,int dindex,
+bool ShrinkTrip_FeasiblityCheckingforSingleTrip(int tripindex,const int pindex,const int dindex,
                                                 LoadRequest& tempreq, Problem& p,Solution& S);
 void InsertRequest(int tripindex,int pindex,int dindex,
                     LoadRequest& tempreq, Problem& p,Solution& S);
@@ -119,6 +118,9 @@ Solution InitialSolution::InitialSolve(Problem& p, Solution& S)
        // cout<<"first assigned customer deleted"<<endl;        
        // cout<<"temp_unrouted_custumer[0]"<<temp_unrouted_custumer[0]<<endl<<endl<<endl;
     }
+    cout<<"loop began main******"<<endl;
+    int nooftimesreloopdone=0;
+    int checkingforerr=0;
     while(!temp_unrouted_custumer.empty())
     {
         bool isinserted=false;
@@ -130,13 +132,34 @@ Solution InitialSolution::InitialSolve(Problem& p, Solution& S)
             if(GlobalTrips[i].islunchtrip!=1)//to check using a variable;
             //define new variable;
             {
+                int reloop=0;//to continue this loop to next customer id if the route is not feasible for a customer
+                int GlobalTripSize=GlobalTrips[i].cust_id.size();
+                
+                SingleTrip& temps= GlobalTrips[i];//is this correct
+                for(auto m=1;m<GlobalTripSize-1;m++)
+                {
+                    if( p.request_feasibility[p.getRequestID(tempreq.pickup.id)][p.getRequestID(temps.cust_id[m])]==0)
+                    {
+                        reloop=1;
+                        break;
+                    }     
+
+                }
+                if(reloop==1)
+                {
+                    nooftimesreloopdone++;
+                    continue;
+                }
+                
+
                     //    cout<<"GlobalTrips[i].cust_id.size()===========  "<<GlobalTrips[i].cust_id.size()<<endl;               
                 //int index_i=-1,index_j=-1;
-                for(auto j=1;j<GlobalTrips[i].cust_id.size();j++)//first index
+               // cout<<endl<<GlobalTripSize<<endl;
+                for(auto j=1;j<GlobalTripSize;j++)//first index
                 {
-                    for(auto k=j+1;k<GlobalTrips[i].cust_id.size();k++)//second index
+                    for(auto k=j+1;k<GlobalTripSize+1;k++)//second index
                     {
-                        //cout<<"GlobalTrip index= "<<i<<"pindex= "<<j<<" dindex="<<k<<"----------------------------------------------------------"<<endl;
+                      //  cout<<"GlobalTrip index= "<<i<<"pindex= "<<j<<" dindex="<<k<<"----------------------------------------------------------"<<endl;
                         bool feas =ShrinkTrip_FeasiblityCheckingforSingleTrip(i,j,k,tempreq,p,S);
                         if(feas)
                         {
@@ -183,13 +206,13 @@ Solution InitialSolution::InitialSolve(Problem& p, Solution& S)
     //cout<<"bi"<<endl;
     cout<<GlobalTrips<<endl;
     cout<<S.MTrips<<endl;
-
+    cout<<nooftimesreloopdone<<"###############################                           &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"<<endl;
     return  S;
 }
 
 //v.erase(std::remove_if(v.begin(), v.end(),[](const int& x) {  return x > 10; }), v.end());// put your condition here
 
-bool ShrinkTrip_FeasiblityCheckingforSingleTrip(int tripindex,int pindex,int dindex,
+bool ShrinkTrip_FeasiblityCheckingforSingleTrip(int tripindex,const int pindex,const int dindex,
                                                 LoadRequest& tempreq, Problem& p,Solution& S)
 {
     //cout<<"MainShrinkTrip"<<endl;

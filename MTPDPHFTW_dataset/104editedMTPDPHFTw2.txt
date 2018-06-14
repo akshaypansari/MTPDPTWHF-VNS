@@ -6,7 +6,7 @@ VehicleTypes---RequestNumber---MaxTravelTime(min)---RestTime(min)
 VehicleType---VehicleLunchReadyTime---VehicleLunchDueTime---VehicleLunchDuration---FixedCost--VariableCost--Capacity
     1                    870                    960                     45             100          1         7
     2                    870                    930                     60             150          2         10
-    3                    870                    930                     99             200          3         15
+    3                    870                    930                     60             200          3         15
 
 LocationID---VhclTypeCons---Weight(kg)---ReadyTime---DueTime---ServiceTime
     0            0              0          450        1230         0

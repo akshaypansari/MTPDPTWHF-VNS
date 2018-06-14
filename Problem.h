@@ -34,16 +34,17 @@ public:
     vector<int> sorted_request_id;//defined in SortRequest
     Node depot;
     Node returndepot;
+    std::vector<std::vector<bool>> request_feasibility;
 
     //
     int p_seed;
 
 
     int num_of_request;
-    int rest_time;
-    int lunch_duration;//to use here or in vehicle
+    double rest_time;
+    double lunch_duration;//to use here or in vehicle
     int vehicle_type_number;
-    int max_travel_time;
+    double max_travel_time;
     std::string instance_name;
 };
 #endif

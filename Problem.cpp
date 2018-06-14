@@ -211,9 +211,70 @@ void Problem::LoadProblem(const std::string &filename)
     }
 
     returndepot=depot;
+    request_feasibility.resize(num_of_request);
+    for(auto i=0;i<num_of_request;i++)
+    {
+        request_feasibility[i].resize(num_of_request);
+    }
+    for(int i=0;i<num_of_request;i++)
+    {
+        request_feasibility[i][i]=1;
+        LoadRequest tempreq=requests[i];
+        double tpe=tempreq.pickup.end_time;
+        double tps=tempreq.pickup.start_time;
+        double tde=tempreq.delivery.end_time;
+        double tds=tempreq.delivery.start_time;
+
+        
+        for (int j=i+1;j<num_of_request;j++)
+        {
+            LoadRequest secondreq= requests[j];
+            // double spe=secondreq.pickup.end_time;
+            // double sps=secondreq.pickup.start_time;
+            // double sde=secondreq.delivery.end_time;
+            // double sds=secondreq.delivery.start_time;
+            
+            if ((tempreq.pickup.end_time+ max_travel_time) < secondreq.pickup.start_time 
+                || (tempreq.pickup.end_time+ max_travel_time) < secondreq.delivery.start_time
+                || (tempreq.delivery.end_time+max_travel_time)< secondreq.pickup.start_time
+                || (tempreq.delivery.end_time+ max_travel_time) < secondreq.delivery.start_time
+                || (secondreq.pickup.end_time+ max_travel_time) < tempreq.pickup.start_time
+                || (secondreq.pickup.end_time+ max_travel_time) < tempreq.delivery.start_time
+                || (secondreq.delivery.end_time+ max_travel_time) < tempreq.pickup.start_time
+                || (secondreq.delivery.end_time+ max_travel_time) < tempreq.delivery.start_time)
+            {
+                request_feasibility[i][j]=request_feasibility[j][i]=0;
+            }
+            else
+            {
+                request_feasibility[i][j]=request_feasibility[j][i]=1;
+            }
+        }
+    }
+        cout<<endl;
+        cout<<"  ";
+        for(int i=0;i<num_of_request;i++)
+        {
+            cout<<i+1<<" ";
+        }
+        cout<<endl;
+        for(int i=0;i<num_of_request;i++)
+        {
+            cout<<i+1<<" ";
+            for(int j=0;j<num_of_request;j++)
+            {
+                cout<<request_feasibility[i][j]<<" ";
+            }
+            cout<<endl;
+        }
+        // cout<<"----------------------------------------------------------------"<<endl;
+        // cout<<requests[8].pickup.end_time<<" "<<requests[10].pickup.start_time<<requests[8].delivery.end_time<<" "<<requests[10].delivery.start_time<<" "<<endl;
+        // cout<<requests[8].pickup.start_time<<" "<<requests[10].pickup.end_time<<requests[8].delivery.start_time<<" "<<requests[10].delivery.end_time<<" "<<endl;
+
 //std::cout<<"i am in problem.cpp"<<depot.id<<std::endl;
     SortRequest();
     //cout<<"hi";
+
 
 }
 
@@ -239,7 +300,7 @@ void Problem::SortRequest()
 {
     int static seedtemp=300   ;
    // srand(time(NULL));//changes    
-    srand(seedtemp++);
+    srand(300);
     vector<Minduration> Min(num_of_request);
     vector<int> Randomnumber(num_of_request);
     for(auto i=0;i<num_of_request;i++)

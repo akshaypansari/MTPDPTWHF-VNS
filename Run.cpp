@@ -34,7 +34,7 @@ void Run::RunMTPDPTWHF(std::string filename, int seed)
 
     Solution Sbest;
     Sbest.total_solution_cost=1000000000;
-    std::srand(seed);
+    std::srand(400);
 
     for(int t=0;t<1;t++)
     {   
