@@ -300,7 +300,7 @@ void Problem::SortRequest()
 {
     int static seedtemp=300   ;
    // srand(time(NULL));//changes    
-    srand(300);
+    srand(seedtemp++);
     vector<Minduration> Min(num_of_request);
     vector<int> Randomnumber(num_of_request);
     for(auto i=0;i<num_of_request;i++)

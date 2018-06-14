@@ -34,7 +34,10 @@ SingleTrip::SingleTrip(){
     //v_type=0;
     
 }
-SingleTrip::~SingleTrip(){}
+SingleTrip::~SingleTrip(){
+    //cout<<"SingleTrip is destroyed\n\n";
+
+}
 
 double SingleTrip::Calculate_Trip_Distance(const Problem& p)
 {
@@ -44,7 +47,7 @@ double SingleTrip::Calculate_Trip_Distance(const Problem& p)
         trip_distance+=p.distance[cust_id[i]][cust_id[i-1]];
     return trip_distance;
 }
-vector<SingleTrip> GlobalTrips;
+//vector<SingleTrip> GlobalTrips;
 
 VehicleTrips::VehicleTrips(){
     num_of_trips=0;
@@ -52,8 +55,11 @@ VehicleTrips::VehicleTrips(){
     vehicletype=0;
     
 }
-VehicleTrips::~VehicleTrips(){}
-double VehicleTrips::Calculate_Cost_of_MultiTrip(const Problem& p)
+VehicleTrips::~VehicleTrips(){
+   // cout<<"VehicleTrip is destroyed\n\n";
+
+}
+double VehicleTrips::Calculate_Cost_of_MultiTrip(const Problem& p,  Solution* S)
 {
     cost_of_vehicletrip=TripVehicle.fixed_cost;
     for(auto tripiterator=Multi.begin();tripiterator!=Multi.end();tripiterator++)
@@ -61,8 +67,8 @@ double VehicleTrips::Calculate_Cost_of_MultiTrip(const Problem& p)
       //  cout<<"VT"<<endl;
        // cout<<*tripiterator<<endl;
         //cout<<"hi"<<TripVehicle.variable_cost;
-        //cout<<"GlobalTrips[*tripiterator].Calculate_Trip_Distance(p)"<<GlobalTrips[*tripiterator].Calculate_Trip_Distance(p)<<endl;
-        cost_of_vehicletrip+=(GlobalTrips[*tripiterator].Calculate_Trip_Distance(p))*TripVehicle.variable_cost;
+        //cout<<"S.GlobalTrips[*tripiterator].Calculate_Trip_Distance(p)"<<S.GlobalTrips[*tripiterator].Calculate_Trip_Distance(p)<<endl;
+        cost_of_vehicletrip+=(S->GlobalTrips[*tripiterator].Calculate_Trip_Distance(p))*TripVehicle.variable_cost;
     }
     return cost_of_vehicletrip;
 }
@@ -91,27 +97,29 @@ double VehicleTrips::Calculate_Cost_of_MultiTrip(const Problem& p)
 //     Trips.push_back(temp_strip);
     
 // }
-bool compareTripEarlyStartTime_duration2(int a, int b)
-{
-    if(GlobalTrips[a].depot_early_start_time<GlobalTrips[b].depot_early_start_time)
-        return true;
-    else if(GlobalTrips[a].depot_early_start_time==GlobalTrips[b].depot_early_start_time
-            &&  GlobalTrips[a].trip_duration<GlobalTrips[b].trip_duration)
-        return true;
-    return false;
-}
+// bool compareTripEarlyStartTime_duration2(int a, int b)
+// {
+//     if(GlobalTrips[a].depot_early_start_time<GlobalTrips[b].depot_early_start_time)
+//         return true;
+//     else if(GlobalTrips[a].depot_early_start_time==GlobalTrips[b].depot_early_start_time
+//             &&  GlobalTrips[a].trip_duration<GlobalTrips[b].trip_duration)
+//         return true;
+//     return false;
+// }
 Solution::Solution(){
     total_solution_cost=0;num_of_vehicles=0;total_solution_cost=0;
 }
 
-Solution::~Solution(){}
+Solution::~Solution(){
+  //  cout<<"Solution is destroyed\n\n";
+}
 
 void Solution::Calculate_Solution_Cost(const Problem& p)
 {
     double C1=1000000,C2=1000;
     for(auto Vehicletripiterator=MTrips.begin();Vehicletripiterator!=MTrips.end();Vehicletripiterator++)
     {
-        total_solution_cost+=C2*(Vehicletripiterator->Calculate_Cost_of_MultiTrip(p));
+        total_solution_cost+=C2*(Vehicletripiterator->Calculate_Cost_of_MultiTrip(p,this));
         cout<<"hi"<<endl;
     }    
     total_solution_cost+=C1*unrouted_cust_request_id.size();
@@ -130,7 +138,20 @@ void Solution::displaySolution()
      //   cout<<"Total Trip(including lunch) in the VehicleTrip Number "<<i+1<<" is "<<MTrips[i].Multi.size()<<endl;
        // cout<<"VehicleTypeused is"<< MTrips[i].TripVehicle.type<<endl;
         int k=0;
-        std::sort(MTrips[i].Multi.begin(),MTrips[i].Multi.end(),compareTripEarlyStartTime_duration2);
+        Solution * s = this;
+        //int a =0, b = 0;
+        
+        std::sort(MTrips[i].Multi.begin(),MTrips[i].Multi.end(),[s](int a, int b)->bool {
+            // Lambda function
+         //   s->GlobalTrips
+        if(s->GlobalTrips[a].depot_early_start_time<s->GlobalTrips[b].depot_early_start_time)
+            return true;
+        else if(s->GlobalTrips[a].depot_early_start_time==s->GlobalTrips[b].depot_early_start_time
+                &&  s->GlobalTrips[a].trip_duration<s->GlobalTrips[b].trip_duration)
+            return true;
+        return false;
+        });
+
         double starttime=GlobalTrips[ MTrips[i].Multi[0]].depot_early_start_time;                  
         for(auto j:MTrips[i].Multi)
         {

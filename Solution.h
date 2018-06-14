@@ -1,10 +1,12 @@
 #ifndef SOLUTION_H_
 #define SOLUTION_H_
 
+
 #include <vector>
 #include "Problem.h"
 #include "Vehicle.h"
 using namespace std;
+class Solution;
 class SingleTrip
 {
     public:
@@ -43,20 +45,18 @@ public:
     std::vector<int> Multi;//vector of trips
     int num_of_trips;//number of trips by the car in a day ie size of trips
     double cost_of_vehicletrip;
-    double Calculate_Cost_of_MultiTrip(const Problem& p);
+    double Calculate_Cost_of_MultiTrip(const Problem& p, Solution* S);
     
    // void createSingleTrip(Problem &p, LoadRequest &Req);
 
     int vehicletype;
-
-
-
 };
 
 class Solution{
     public:
     Solution();
     ~Solution();
+    std::vector<SingleTrip> GlobalTrips;
     std::vector<VehicleTrips> MTrips;
     int num_of_vehicles;
     void Calculate_Solution_Cost(const Problem& p);
@@ -64,6 +64,15 @@ class Solution{
     double total_solution_cost;
     VehicleTrips createMultipleTrip(VehicleTrips &mtrip, Problem &p,LoadRequest &Req);
     void displaySolution();
+//     bool compareTripEarlyStartTime_duration(int a, int b)
+// {
+//     if(GlobalTrips[a].depot_early_start_time<GlobalTrips[b].depot_early_start_time)
+//         return true;
+//     else if(GlobalTrips[a].depot_early_start_time==GlobalTrips[b].depot_early_start_time
+//             &&  GlobalTrips[a].trip_duration<GlobalTrips[b].trip_duration)
+//         return true;
+//     return false;
+// }
 };
 
 

@@ -10,7 +10,7 @@
 #include <cstdlib>
 #include <algorithm>
 // 
-extern vector<SingleTrip> GlobalTrips;
+//extern vector<SingleTrip> GlobalTrips;
 bool compare_start_time(LoadRequest const& r1,LoadRequest const& r2)
 {
     if(r1.pickup.start_time<r2.pickup.start_time) return true;
@@ -36,7 +36,7 @@ void Run::RunMTPDPTWHF(std::string filename, int seed)
     Sbest.total_solution_cost=1000000000;
     std::srand(400);
 
-    for(int t=0;t<1;t++)
+    for(int t=0;t<500;t++)
     {   
     Problem p;
     p.LoadProblem(fname);
@@ -53,10 +53,11 @@ void Run::RunMTPDPTWHF(std::string filename, int seed)
         cout<<"There is sthg wrong"<<endl;
         exit(0);
     }
-    //GlobalTrips.clear();
+    
     if(S_init.total_solution_cost<Sbest.total_solution_cost)
         {
             Sbest=S_init;
+            //S_init.~Solution();
             cout<<"t value "<<t<<endl;
         }
     //cout<< "hi///// "<<Sbest.total_solution_cost<<endl;    
