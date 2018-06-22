@@ -105,7 +105,7 @@ double ShrinkTripBI(int pindex,int dindex,SingleTrip& temps,const LoadRequest& t
         duration=duration+d01+s0;
         if(duration>p.max_travel_time)//to complete
         {
-            cout<<"duration"<<duration<<endl;
+            // cout<<"duration"<<duration<<endl;
 
             temps.cust_id.erase(temps.cust_id.begin()+dindex);
             temps.cust_id.erase(temps.cust_id.begin()+pindex);
