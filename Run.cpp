@@ -35,9 +35,10 @@ void Run::RunMTPDPTWHF(std::string filename, int seed)
 
     Solution Sbest;
     Sbest.total_solution_cost=1000000000;
-    std::srand(1000);
+    int SbestmtripsSize=10000;
     Problem p;
-    for(int t=0;t<1;t++)//edits
+    // std::srand(1000);
+    for(int t=0;t<10;t++)//edits//best till now is at t=10 qhwn seed was 1000
     {   
  
     p.LoadProblem(fname);
@@ -57,9 +58,10 @@ void Run::RunMTPDPTWHF(std::string filename, int seed)
         exit(0);
     }
     
-    if(S_init.total_solution_cost<Sbest.total_solution_cost)
+    if(S_init.total_solution_cost<Sbest.total_solution_cost /*&& S_init.MTrips.size()<=SbestmtripsSize*/)
         {
             Sbest=S_init;
+            SbestmtripsSize=S_init.MTrips.size();
             //S_init.~Solution();
             cout<<"t value "<<t<<endl;
           }
@@ -68,18 +70,18 @@ void Run::RunMTPDPTWHF(std::string filename, int seed)
     }
     Sbest.displaySolution();
     cout<<"Total Cost"<<Sbest.total_solution_cost<<endl;
+    getchar();
+    // system("PAUSE");
     LocalSearch LS;
     LS.LocalOpt(Sbest,p);
     Sbest.displaySolution();
     Sbest.Calculate_Solution_Cost(p);
     cout<<"second run----------------------------------------------------------------------------------------------------------------------------------------------"<<endl;
+    getchar();
+
     LS.LocalOpt(Sbest,p);
     Sbest.displaySolution();
     Sbest.Calculate_Solution_Cost(p);
-    // cout<<"third run----------------------------------------------------------------------------------------------------------------------------------------------"<<endl;
-    // LS.LocalOpt(Sbest,p);
-    // Sbest.displaySolution();
-    // Sbest.Calculate_Solution_Cost(p);
     cout<<"solution= "<<endl;
     Sbest.Calculate_Solution_Cost(p);
         

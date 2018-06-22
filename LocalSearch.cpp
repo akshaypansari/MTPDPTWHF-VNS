@@ -28,10 +28,10 @@ LocalSearch::~LocalSearch()
 
 bool SearchforAllFalse(const std::vector<bool>& vec)
 {
-    cout<<"search all false ";
+    // cout<<"search all false ";
     for(bool i:vec)
     {
-        cout<<i<<" ";
+        // cout<<i<<" ";
         if (i==0)
         {
             
@@ -229,23 +229,31 @@ void LocalSearch::LocalOpt( Solution& solution, const Problem& p)
     {
         m_LS2_bookkeep[i]=0;
     }
-    int total_local_search_operators=4;
+    int total_local_search_operators=p.num_of_request/2;
     //assumed the current solution to be the best solution available
     Solution Sbest=solution;
     //assume there are n types of localsearch operation
     int unsuccesful_attempt=0;
-    LocalSearch_operator1(solution,p);
+    // LocalSearch_operator1(solution,p);
      for(int i=0;unsuccesful_attempt<total_local_search_operators;(++i)%=total_local_search_operators)
     {
-        if(i==0)
-        {
+        // if(i==0)
+        // {
             while(LocalSearch_operator2( solution,  p))
             {
+                for(unsigned j=0;j<p.num_of_request;j++)
+                {
+                    m_LS2_bookkeep[j]=0;
+                }
                 unsuccesful_attempt=0;
             }
             unsuccesful_attempt++;
-        }
+    // LocalSearch_operator1(solution,p);
+    // getchar();
+        // }
     }
+     LocalSearch_operator1(solution,p);
+
     //     if(i==1)
     //     {
     //         while(LocalSearch_operator2( solution, p))

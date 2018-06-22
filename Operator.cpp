@@ -181,7 +181,7 @@ double ShrinkTripBI(int pindex,int dindex,SingleTrip& temps,const LoadRequest& t
     }
     else
     {
-        cout<<" multiinfeasiblbe ";
+        // cout<<" multiinfeasiblbe ";
         return 1000000000;
     }
 }
@@ -438,21 +438,21 @@ bool BestInsertPlace(int request_index,const Problem& p, Solution& S, double cos
                                     continue;
                                 }
                                 cout<<"4"<<endl;
-                                cout<<"customer_size"<<endl;
+                                // cout<<"customer_size"<<endl;
                                 for(auto pindex=1 ; pindex < customersize ; pindex++)
                                 {
                                     
                                     for(auto dindex=pindex+1 ; dindex < customersize+1 ; dindex++)
                                         {
-                                            cout<<"pindex == "<<pindex<<"dindex == "<<dindex;
+                                            // cout<<"pindex == "<<pindex<<"dindex == "<<dindex;
                                             double newaddedcost=ShrinkTripBI(pindex,dindex,tempStrip,req,p,S);//returns cost of insertion
                                             if(newaddedcost<curr_cost)
                                             {
-                                                cout<<"***************************************************\n";
-                                                cout<<"inside deepest loop"<<"-----------------------------------------------------"<<endl;                                    
+                                                // cout<<"***************************************************\n";
+                                                // cout<<"inside deepest loop"<<"-----------------------------------------------------"<<endl;                                    
                                                 cout<<"newaddedcost"<<newaddedcost<< endl;
-                                                cout<<" falsetripnum = "<<*singletrip_it<<"\n";
-                                                cout<<" realtripnum = "<<tempnum<<"\n\n";
+                                                // cout<<" falsetripnum = "<<*singletrip_it<<"\n";
+                                                // cout<<" realtripnum = "<<tempnum<<"\n\n";
                                                 
                                                 best_it=tempnum;
                                                 vbest_it=vehicle_trip_it;
@@ -500,6 +500,7 @@ bool BestInsertPlace(int request_index,const Problem& p, Solution& S, double cos
     }
     else if(curr_cost+cost==0)
     {
+        cout<<"curr+cost==0"<<endl;
         cout<<"curr_cost+cost== "<<curr_cost+cost<<endl;
         cout<<"pindex=="<<pbest<<endl<<"dindex=="<<dbest<<endl;
         cout<<"iterator trip"<<S.GlobalTrips[best_it].vehicletrip_id<<"  other info"<<S.GlobalTrips[best_it].trip_cost<<endl;
