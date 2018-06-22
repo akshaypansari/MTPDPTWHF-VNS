@@ -35,9 +35,9 @@ void Run::RunMTPDPTWHF(std::string filename, int seed)
 
     Solution Sbest;
     Sbest.total_solution_cost=1000000000;
-    std::srand(1000);
+    std::srand(400);
     Problem p;
-    for(int t=0;t<1;t++)//edits
+    for(int t=0;t<63;t++)
     {   
  
     p.LoadProblem(fname);
@@ -72,16 +72,12 @@ void Run::RunMTPDPTWHF(std::string filename, int seed)
     LS.LocalOpt(Sbest,p);
     Sbest.displaySolution();
     Sbest.Calculate_Solution_Cost(p);
-    cout<<"second run----------------------------------------------------------------------------------------------------------------------------------------------"<<endl;
+    cout<<"second run of solution33333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"<<endl;
     LS.LocalOpt(Sbest,p);
     Sbest.displaySolution();
     Sbest.Calculate_Solution_Cost(p);
-    // cout<<"third run----------------------------------------------------------------------------------------------------------------------------------------------"<<endl;
-    // LS.LocalOpt(Sbest,p);
-    // Sbest.displaySolution();
+    // cout<<"solution= "<<endl;
     // Sbest.Calculate_Solution_Cost(p);
-    cout<<"solution= "<<endl;
-    Sbest.Calculate_Solution_Cost(p);
         
 
     

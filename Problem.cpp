@@ -252,21 +252,21 @@ void Problem::LoadProblem(const std::string &filename)
         }
     }
         cout<<endl;
-        cout<<"  ";
-        for(int i=0;i<num_of_request;i++)
-        {
-            cout<<i+1<<" ";
-        }
-        cout<<endl;
-        for(int i=0;i<num_of_request;i++)
-        {
-            cout<<i+1<<" ";
-            for(int j=0;j<num_of_request;j++)
-            {
-                cout<<request_feasibility[i][j]<<" ";
-            }
-            cout<<endl;
-        }
+        // cout<<"  ";
+        // for(int i=0;i<num_of_request;i++)
+        // {
+        //     cout<<i+1<<" ";
+        // }
+        // cout<<endl;
+        // for(int i=0;i<num_of_request;i++)
+        // {
+        //     cout<<i+1<<" ";
+        //     for(int j=0;j<num_of_request;j++)
+        //     {
+        //         cout<<request_feasibility[i][j]<<" ";
+        //     }
+        //     cout<<endl;
+        // }
         // cout<<"----------------------------------------------------------------"<<endl;
         // cout<<requests[8].pickup.end_time<<" "<<requests[10].pickup.start_time<<requests[8].delivery.end_time<<" "<<requests[10].delivery.start_time<<" "<<endl;
         // cout<<requests[8].pickup.start_time<<" "<<requests[10].pickup.end_time<<requests[8].delivery.start_time<<" "<<requests[10].delivery.end_time<<" "<<endl;
@@ -298,7 +298,7 @@ bool compare_duration(Minduration const& r1,Minduration const& r2)
 }
 void Problem::SortRequest()
 {
-    int static seedtemp=300   ;
+    int static seedtemp=500   ;
    // srand(time(NULL));//changes    
     srand(seedtemp++);
     vector<Minduration> Min(num_of_request);
@@ -317,18 +317,15 @@ void Problem::SortRequest()
         Randomnumber.erase(Randomnumber.begin()+index);
         // Min[i].id=requests[i].rid;//id has the customer real id number and not index
         // Min[i].duration=std::min(requests[i].pickup.end_time-requests[i].pickup.start_time,requests[i].delivery.end_time-requests[i].delivery.start_time);
-
-       // cout<<"id"<<Min[i].id<<"dur"<<Min[i].duration<<endl;
-       //Min.push_back(M);
     }
 //   cout<<"sortreq"<<endl;
 //   cout<<"sr2"<<endl;
     // std::sort(Min.begin(),Min.end(),compare_duration);
 
-    for(int i=0;i<num_of_request;i++)
-    {
-        cout<<Min[i].id<<" dur= "<<Min[i].duration<<endl;
-    }
+    // for(int i=0;i<num_of_request;i++)
+    // {
+    //     cout<<Min[i].id<<" dur= "<<Min[i].duration<<endl;
+    // }
     sorted_request_id.resize(num_of_request);
     for(int i=0;i<num_of_request;i++)
     {

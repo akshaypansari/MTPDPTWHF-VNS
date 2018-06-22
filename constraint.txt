@@ -1,0 +1,11 @@
+Total constraint
+
+1. type constraint
+2. duration constraint
+3. time window constraint
+4. capacity constraint
+5. precedence constraint
+6. lunch break constraint
+7. multitrip constraint:
+a) lunch break assingnment
+b) time window of depot  arrival/departure

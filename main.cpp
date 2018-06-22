@@ -15,7 +15,7 @@ int main()
     std::clock_t c_start = std::clock();
     auto t_start = std::chrono::high_resolution_clock::now();    
     Run r;
-    r.RunMTPDPTWHF("104editedMTPDPHFTw2",1);//set the parameter here
+    r.RunMTPDPTWHF("104editedMTPDPHFTw",1);//set the parameter here
     std::clock_t c_end = std::clock();
     auto t_end = std::chrono::high_resolution_clock::now();
 

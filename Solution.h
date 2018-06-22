@@ -17,9 +17,11 @@ class SingleTrip
     double depot_late_start_time;//time when the car reach the depot
     double trip_duration;//trip duration
     double trip_cost;//calculate the cost of the trip
-    double weight_to_carry;//check the maximum weight that is carried
+    double max_weight;//check the maximum weight that is carried
     bool islunchtrip;
     double trip_distance;
+    double waitingtime;
+    double servicetime;
 
     std::vector<double> start_time_trip;//start time of trip
     //int number_of_nodes_visited;//how many nodes has been visited including the depot;
@@ -44,8 +46,11 @@ public:
     Vehicle TripVehicle;
     std::vector<int> Multi;//vector of trips
     int num_of_trips;//number of trips by the car in a day ie size of trips
+    int vehicletrip_id;
     double cost_of_vehicletrip;
+    double distance_of_vehicletrip;
     double Calculate_Cost_of_MultiTrip(const Problem& p, Solution* S);
+    double Update_Cost_of_MultiTrip();
     
    // void createSingleTrip(Problem &p, LoadRequest &Req);
 
@@ -60,10 +65,14 @@ class Solution{
     std::vector<VehicleTrips> MTrips;
     int num_of_vehicles;
     void Calculate_Solution_Cost(const Problem& p);
-    vector<int> unrouted_cust_request_id;
+    double solution_distance_travelled;
     double total_solution_cost;
+
+    vector<int> unrouted_cust_request_id;
+    vector<bool> local_Search_bookkeeping;
     VehicleTrips createMultipleTrip(VehicleTrips &mtrip, Problem &p,LoadRequest &Req);
     void displaySolution();
+    void updateMTrips();
 //     bool compareTripEarlyStartTime_duration(int a, int b)
 // {
 //     if(GlobalTrips[a].depot_early_start_time<GlobalTrips[b].depot_early_start_time)
