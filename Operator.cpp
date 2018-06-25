@@ -20,6 +20,15 @@ std::ostream& operator<< (std::ostream& out, const std::vector<T>& v) {
     return out;
 
 }
+bool bool_Check_Feasibility(int vehiclenum,int customer_id, const Problem& p, Solution& solution)
+{
+    return(solution.MTrips[vehiclenum].TripVehicle.type<p.requests[customer_id].pickup.type_const
+            && p.requests[customer_id].pickup.demand<=solution.MTrips[vehiclenum].TripVehicle.Capacity);
+// if(vehicle_trip_it->TripVehicle.type<req.pickup.type_const&& 
+// req.pickup.demand<=vehicle_trip_it->TripVehicle.Capacity)
+
+}
+
 void ShrinkTrip(SingleTrip& stemp,const Problem& p, Solution& S)
 {
     double early_start=p.depot.start_time ,late_start=p.depot.end_time,duration=0;
@@ -237,13 +246,13 @@ void Erase_ID_from_Trip(std::vector<SingleTrip>::iterator temp_strip,
         {
             /*the LHS below */
             node_it=temp_strip->cust_id.erase(node_it);
-            cout<<*node_it<<endl;//debug
+            // cout<<*node_it<<endl;//debug
         }
         else{
             node_it++;
         }
     }
-    std::cout<<temp_strip->cust_id;
+    // std::cout<<temp_strip->cust_id;
     //if(temp_strip->cust_id.size()>2)
     ShrinkTrip(*temp_strip,p,solution);//i guess no need to check multifeasibility
 }
@@ -526,6 +535,125 @@ bool BestInsertPlace(int request_index,const Problem& p, Solution& S, double cos
         return false;
     }
 }
+
+
+bool bool_insert_customer(SingleTrip& temps1,SingleTrip& temps2, int customer_id1,int customer_id2,const Problem& p,Solution& solution,  double cost)
+{
+    LoadRequest req1=p.requests[customer_id1];
+    LoadRequest req2=p.requests[customer_id2];
+    double PNodeSerTime1=req1.pickup.service_time;
+    double DNodeSerTime1=req1.delivery.service_time;
+
+
+    int customersize2 = temps2.cust_id.size();
+
+    double PNodeSerTime2 = req2.pickup.service_time;
+    double DNodeSerTime2 = req2.delivery.service_time;
+    // for(auto m = 1;  m  < customersize2-1 ;  m++)
+    // {
+    //     if( p.request_feasibility [ p.getRequestID(req2.pickup.id) ] [ p.getRequestID(temps2.cust_id[m]) ] == 0)
+    //     {
+    //         return false;
+    //     }     
+    // }
+
+    // cout<<"1"<<endl;
+    double curr_cost1 = 1000000000;
+    int p1best,d1best;
+    // cout<<"customer_size"<<endl;
+    int customersize1=temps1.cust_id.size();
+    if(temps1.trip_duration-temps1.waitingtime+PNodeSerTime1+DNodeSerTime1<p.max_travel_time//trip duration-waiting time+service<=duration)
+    && (temps1.depot_late_start_time+p.max_travel_time)>std::max(req1.pickup.start_time,req1.delivery.start_time))
+    {
+        for(auto m = 1;  m  < customersize1-1 ;  m++)
+        {
+            if( p.request_feasibility [ p.getRequestID(req1.pickup.id) ] [ p.getRequestID(temps1.cust_id[m]) ] == 0)
+            {
+                return false;
+            }     
+        }
+        
+        for(auto pindex=1 ; pindex < customersize1 ; pindex++)
+        {
+
+            for(auto dindex=pindex+1 ; dindex < customersize1+1 ; dindex++)
+                {
+                    // cout<<"pindex == "<<pindex<<"dindex == "<<dindex;
+                    double newaddedcost = ShrinkTripBI (pindex, dindex, temps1, req1, p, solution);//returns cost of insertion
+                    if ( newaddedcost<curr_cost1 )
+                    {
+                        p1best=pindex;
+                        d1best=dindex;
+                        curr_cost1=newaddedcost;
+                    }
+                }
+        }
+    }
+    else{
+        return false;
+    }
+
+    
+    // cout<<"2"<<endl;
+    double curr_cost2 = 1000000000;
+    int p2best,d2best;
+    // cout<<"customer_size"<<endl;
+    if(temps2.trip_duration-temps2.waitingtime+PNodeSerTime2+DNodeSerTime2<p.max_travel_time//trip duration-waiting time+service<=duration)
+    && (temps2.depot_late_start_time+p.max_travel_time)>std::max(req2.pickup.start_time,req2.delivery.start_time))
+    {
+        // cout<<"bug1"<<endl;
+        for(auto m = 1;  m  < customersize2-1 ;  m++)
+        {
+
+            if( p.request_feasibility [ p.getRequestID(req2.pickup.id) ] [ p.getRequestID(temps2.cust_id[m]) ] == 0)
+            {
+                return false;
+            }     
+        }
+        // cout<<"bug1.75"<<endl;
+        for(auto pindex=1 ; pindex < customersize2 ; pindex++)
+        {
+            for(auto dindex=pindex+1 ; dindex < customersize2+1 ; dindex++)
+                {
+                    // cout<<"pindex == "<<pindex<<"dindex == "<<dindex;
+                    // cout<<"bug2"<<endl;
+                    double newaddedcost = ShrinkTripBI (pindex, dindex, temps2, req2, p, solution);//returns cost of insertion
+                    if ( newaddedcost<curr_cost2 )
+                    {
+                        p2best=pindex;
+                        d2best=dindex;
+                        curr_cost2=newaddedcost;
+                    }
+                }
+        }
+    }
+    else{
+        return false;
+    }
+    if(curr_cost1+curr_cost2+cost<0)
+    {
+        cout<<"curr_cost1+curr_cost2+cost== "<<curr_cost1+curr_cost2+cost<<endl;
+        temps1.cust_id.insert(temps1.cust_id.begin()+p1best,req1.pickup.id);//.insert(temps.cust_id.begin()+pindex);
+        temps1.cust_id.insert(temps1.cust_id.begin()+d1best,req1.delivery.id);//.insert(temps.cust_id.begin()+pindex);
+
+        temps2.cust_id.insert(temps2.cust_id.begin()+p2best,req2.pickup.id);//.insert(temps.cust_id.begin()+pindex);
+        temps2.cust_id.insert(temps2.cust_id.begin()+d2best,req2.delivery.id);//.insert(temps.cust_id.begin()+pindex);
+
+        ShrinkTrip(temps1,p,solution);
+        ShrinkTrip(temps2,p,solution);
+
+        return true;
+        
+    }
+    else
+    {
+        return false;
+    }
+
+
+
+}
+
 // #ifndef OPERATOR_H_
 // #define OPERATOR_H_
 
