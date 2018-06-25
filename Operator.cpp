@@ -81,7 +81,7 @@ void ShrinkTrip(SingleTrip& stemp,const Problem& p, Solution& S)
     stemp.trip_duration=duration;
     stemp.max_weight=max_capacity;
     stemp.trip_distance=totaltripdistance;
-    cout<<"Shrink Trip duration"<<duration;
+    // cout<<"Shrink Trip duration"<<duration;
     //cout<<"hi"<<endl;
     //cout<<"ID-----"<<p.getNode(stemp.cust_id[1]).id<<"updated"<<endl;
 }
@@ -419,7 +419,7 @@ bool BestInsertPlace(int request_index,const Problem& p, Solution& S, double cos
                     // cout<<"singletrip== "<<tempnum<<" \n";
                     if(tempStrip.islunchtrip==0)
                     {
-                        cout<<"1";
+                        // cout<<"1";
                         // cout<<"S.MTrips[tempStrip.vehicletrip_id].TripVehicle.type = "<<S.MTrips[tempStrip.vehicletrip_id].TripVehicle.type
                         // <<" req.pickup.type_const == "<<req.pickup.type_const<<endl;
                         // cout<<" req.pickup.demand == "<<req.pickup.demand<<" S.MTrips[tempStrip.vehicletrip_id].TripVehicle.Capacity == "<<S.MTrips[singletrip_it->vehicletrip_id].TripVehicle.Capacity<<endl;
@@ -427,11 +427,11 @@ bool BestInsertPlace(int request_index,const Problem& p, Solution& S, double cos
                         if(vehicle_trip_it->TripVehicle.type<req.pickup.type_const&& 
                             req.pickup.demand<=vehicle_trip_it->TripVehicle.Capacity)
                         {
-                            cout<<"2";
+                            // cout<<"2";
                             if( tempStrip.trip_duration-tempStrip.waitingtime+PNodeSerTime+DNodeSerTime<p.max_travel_time//trip duration-waiting time+service<=duration)
                                 && (tempStrip.depot_late_start_time+p.max_travel_time)>std::max(req.pickup.start_time,req.delivery.start_time))
                             {
-                                cout<<"3";
+                                // cout<<"3";
                                 int customersize = tempStrip.cust_id.size();
                                 for(auto m=1;m<customersize-1;m++)
                                 {
@@ -446,7 +446,7 @@ bool BestInsertPlace(int request_index,const Problem& p, Solution& S, double cos
                                     nooftimesreloopdone++;
                                     continue;
                                 }
-                                cout<<"4"<<endl;
+                                // cout<<"4"<<endl;
                                 // cout<<"customer_size"<<endl;
                                 for(auto pindex=1 ; pindex < customersize ; pindex++)
                                 {
@@ -485,10 +485,10 @@ bool BestInsertPlace(int request_index,const Problem& p, Solution& S, double cos
     if(curr_cost+cost<0)
     {
         cout<<"curr_cost+cost== "<<curr_cost+cost<<endl;
-        cout<<"pindex=="<<pbest<<"dindex=="<<dbest<<endl;
-        cout<<"iterator trip"<<S.GlobalTrips[best_it].vehicletrip_id<<"  other info"<<S.GlobalTrips[best_it].trip_cost<<endl;
-        cout<<"hi3";
-        cout<<"size=="<<S.GlobalTrips[best_it].cust_id.size()<<endl;
+        // cout<<"pindex=="<<pbest<<"dindex=="<<dbest<<endl;
+        // cout<<"iterator trip"<<S.GlobalTrips[best_it].vehicletrip_id<<"  other info"<<S.GlobalTrips[best_it].trip_cost<<endl;
+        // cout<<"hi3";
+        // cout<<"size=="<<S.GlobalTrips[best_it].cust_id.size()<<endl;
         //add request to the singletrip_it
         S.GlobalTrips[best_it].cust_id.insert(S.GlobalTrips[best_it].cust_id.begin()+pbest,req.pickup.id);//.insert(temps.cust_id.begin()+pindex);
         // cout<<"hi4";        
@@ -498,34 +498,31 @@ bool BestInsertPlace(int request_index,const Problem& p, Solution& S, double cos
         {
             //
         }
-        cout<<"hi"<<endl;
+        // cout<<"hi"<<endl;
         ShrinkTrip(S.GlobalTrips[best_it],p,S);
         //remove request from the unserved request
-        cout<<"iterator trip"<<S.GlobalTrips[best_it].vehicletrip_id<<"  other info"<<S.GlobalTrips[best_it].trip_cost<<endl;
+        // cout<<"iterator trip"<<S.GlobalTrips[best_it].vehicletrip_id<<"  other info"<<S.GlobalTrips[best_it].trip_cost<<endl;
         S.unrouted_cust_request_id.erase(std::remove(S.unrouted_cust_request_id.begin(), S.unrouted_cust_request_id.end(),request_index), S.unrouted_cust_request_id.end());
         //
-        cout<<"Size of unrouted customer="<<S.unrouted_cust_request_id.size()<<endl;
+        // cout<<"Size of unrouted customer="<<S.unrouted_cust_request_id.size()<<endl;
         return true;
     }
     else if(curr_cost+cost==0)
     {
-        cout<<"curr+cost==0"<<endl;
-        cout<<"curr_cost+cost== "<<curr_cost+cost<<endl;
-        cout<<"pindex=="<<pbest<<endl<<"dindex=="<<dbest<<endl;
-        cout<<"iterator trip"<<S.GlobalTrips[best_it].vehicletrip_id<<"  other info"<<S.GlobalTrips[best_it].trip_cost<<endl;
+        // cout<<"curr+cost==0"<<endl;
+        // cout<<"curr_cost+cost== "<<curr_cost+cost<<endl;
+        // cout<<"pindex=="<<pbest<<endl<<"dindex=="<<dbest<<endl;
+        // cout<<"iterator trip"<<S.GlobalTrips[best_it].vehicletrip_id<<"  other info"<<S.GlobalTrips[best_it].trip_cost<<endl;
         //add request to the singletrip_it
         S.GlobalTrips[best_it].cust_id.insert(S.GlobalTrips[best_it].cust_id.begin()+pbest,req.pickup.id);//.insert(temps.cust_id.begin()+pindex);
         S.GlobalTrips[best_it].cust_id.insert(S.GlobalTrips[best_it].cust_id.begin()+dbest,req.delivery.id);//
-        if(S.GlobalTrips[best_it].cust_id.size()==4)
-        {
-            //
-        }
+
         ShrinkTrip(S.GlobalTrips[best_it],p,S);
         //remove request from the unserved request
-        cout<<"iterator trip"<<S.GlobalTrips[best_it].vehicletrip_id<<"  other info"<<S.GlobalTrips[best_it].trip_cost<<endl;
+        // cout<<"iterator trip"<<S.GlobalTrips[best_it].vehicletrip_id<<"  other info"<<S.GlobalTrips[best_it].trip_cost<<endl;
         S.unrouted_cust_request_id.erase(std::remove(S.unrouted_cust_request_id.begin(), S.unrouted_cust_request_id.end(),request_index), S.unrouted_cust_request_id.end());
         //
-        cout<<"Size of unrouted customer="<<S.unrouted_cust_request_id.size()<<endl;
+        //    cout<<"Size of unrouted customer="<<S.unrouted_cust_request_id.size()<<endl;
         bookkeep[request_index]=1;
         return false;
     }

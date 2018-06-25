@@ -38,7 +38,7 @@ void Run::RunMTPDPTWHF(std::string filename, int seed)
     int SbestmtripsSize=10000;
     Problem p;
     // std::srand(1000);
-    for(int t=0;t<1;t++)//edits//best till now is at t=10 qhwn seed was 1000
+    for(int t=0;t<2;t++)//edits//best till now is at t=10 qhwn seed was 1000
     {   
  
     p.LoadProblem(fname);
@@ -58,7 +58,7 @@ void Run::RunMTPDPTWHF(std::string filename, int seed)
         exit(0);
     }
     
-    if(S_init.total_solution_cost<Sbest.total_solution_cost /*&& S_init.MTrips.size()<=SbestmtripsSize*/)
+    if(S_init.total_solution_cost<Sbest.total_solution_cost && S_init.MTrips.size()<=SbestmtripsSize)
         {
             Sbest=S_init;
             SbestmtripsSize=S_init.MTrips.size();
