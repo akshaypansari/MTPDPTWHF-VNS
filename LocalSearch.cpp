@@ -152,6 +152,7 @@ bool LocalSearch::LocalSearch_operator1(Solution& solution,const Problem& p)
                     }
                 else if(vehicle_trip_it->Multi.size()<=second_vehicle_trip_it->Multi.size()&&vehicle_trip_it->TripVehicle.type == second_vehicle_trip_it->TripVehicle.type)
                     {
+                        // cout<<"vehicle_trip_it->TripVehicle.type == second_vehicle_trip_it->TripVehicle.type= "<<vehicle_trip_it->TripVehicle.type<<endl;
                     //check first for type difference
                     //this guarantees that type_const constraint won't be violated as we are inserting trip from vt1 to vt2
                             // if()
@@ -161,6 +162,7 @@ bool LocalSearch::LocalSearch_operator1(Solution& solution,const Problem& p)
                                 //check the maximum weight capacity
                                 if(tempStrip.max_weight <= second_vehicle_trip_it->TripVehicle.Capacity)//capacity check
                                 {
+                                    // cout<<"hi"<<endl;
                                     // std::cout<<"first vehicle totaltrip cost-pre "<<vehicle_trip_it->Calculate_Cost_of_MultiTrip(p,&solution)<<std::endl;
                                     // std::cout<<"second vehicle totaltrip cost-pre "<<second_vehicle_trip_it->Calculate_Cost_of_MultiTrip(p,&solution)<<std::endl;
 
@@ -172,7 +174,7 @@ bool LocalSearch::LocalSearch_operator1(Solution& solution,const Problem& p)
                                     if(multifeas)
                                     {
                                         // cout<<"aftermultifeas"<<endl;
-
+                                        
                                         tempStrip.vehicletrip_id=second_vehicle_trip_it->vehicletrip_id;//vehicletripid changed
 
                                         std::vector<int>& vec = vehicle_trip_it->Multi; // using shorter name
@@ -183,9 +185,9 @@ bool LocalSearch::LocalSearch_operator1(Solution& solution,const Problem& p)
                                             // solution.MTrips.erase(solution.MTrips.begin()+tempStrip.vehicletrip_id);//have to update the solution also and also the removed singletrip vector
                                             solution.MTrips.erase(vehicle_trip_it);//have to update the solution also and also the removed singletrip vector
                                             getchar();
-                                            cout<<"hi1"<<endl;
+                                            // cout<<"hi1"<<endl;
                                             solution.updateMTrips();
-                                            cout<<"hi2"<<endl;
+                                            // cout<<"hi2"<<endl;
 
                                             mainbreak==true;
                                             return true;
@@ -219,15 +221,6 @@ bool LocalSearch::LocalSearch_operator1(Solution& solution,const Problem& p)
                                     }
                                         
                                 }
-                            // }
-                            // else if()
-                            // {
-
-                            // }
-                            // else
-                            // {
-
-                            // }
                     }
                 }
             }
@@ -305,7 +298,7 @@ bool LocalSearch::LocalSearch_operator2(Solution& solution,const Problem& p)//a 
         if(solution.MTrips[iter->vehicletrip_id].Multi.size()==1/*check that it is also lunch trip*/)
         {
             cout<<"extra vehicle trip erased+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++vehicleerased"<<endl;
-            getchar();
+            // getchar();
             solution.MTrips.erase(solution.MTrips.begin()+iter->vehicletrip_id);//have to update the solution also and also the removed singletrip vector
             solution.updateMTrips();
             
@@ -470,7 +463,7 @@ void LocalSearch::LocalOpt( Solution& solution, const Problem& p)
     {
         m_LS2_bookkeep[i]=0;
     }
-    int total_local_search_operators=1000;
+    int total_local_search_operators=1500;
     //assumed the current solution to be the best solution available
     Solution Sbest=solution;
     //assume there are n types of localsearch operation
@@ -486,12 +479,18 @@ void LocalSearch::LocalOpt( Solution& solution, const Problem& p)
             {
                 for(unsigned j=0;j<p.num_of_request;j++)
                 {
-                    m_LS2_bookkeep[j]=0;
+                    m_LS2_bookkeep[j] = 0;
                 }
-                unsuccesful_attempt=0;
+                unsuccesful_attempt = 0;
             }
             unsuccesful_attempt++;
-            LocalSearch_operator1( solution, p);
+            if(LocalSearch_operator1 ( solution, p ) )
+            {
+                    for(unsigned j=0;j<p.num_of_request;j++)
+                {
+                    m_LS2_bookkeep[j]=0;
+                }
+            }
          }
     // getchar();
         // }
@@ -509,7 +508,13 @@ void LocalSearch::LocalOpt( Solution& solution, const Problem& p)
                 unsuccesful_attempt=0;
             }
             unsuccesful_attempt++;
-            LocalSearch_operator1( solution, p);
+            if(LocalSearch_operator1( solution, p))
+            {
+                for(unsigned j=0;j<p.num_of_request;j++)
+                {
+                    m_LS2_bookkeep[j]=0;
+                }
+            }
         }  
         // if(i%3==2)
         // {
@@ -532,7 +537,12 @@ void LocalSearch::LocalOpt( Solution& solution, const Problem& p)
         //     unsuccesful_attempt++;
         // }
     }
-    total_local_search_operators=0;
+    // solution.MTrips[3].Multi[0];
+    // solution.MTrips[2].Multi.push_back(solution.MTrips[3].Multi[0]);
+    // int bool2=MultiTripFeasiblity(solution.MTrips[2],p,solution);
+    // cout<<"bool "<<bool2;
+    // getchar();
+    // total_local_search_operators=0;
 //     for(int i=0;unsuccesful_attempt<total_local_search_operators;(++i)%=total_local_search_operators)
 //     {
 

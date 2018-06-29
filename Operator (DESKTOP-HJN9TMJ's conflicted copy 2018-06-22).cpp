@@ -213,7 +213,7 @@ bool MultiTripFeasiblity(VehicleTrips& VT,const Problem& p, Solution& S)//this c
         //cout<<"new loop ="<<*it<<endl;
         //cout<<"GlobalTrips[*(it-1)].trip_duration"<<S.GlobalTrips[*(it-1)].trip_duration<<endl;
         //cout<<"oldtemp"<<temp<<endl;
-        temp=max(temp+S.GlobalTrips[*(it-1)].trip_duration+VT.TripVehicle.lunch_duration*!(S.GlobalTrips[*(it-1)].islunchtrip),
+        temp=max(temp+S.GlobalTrips[*(it-1)].trip_duration+p.rest_time*!(S.GlobalTrips[*(it-1)].islunchtrip),
                             S.GlobalTrips[*it].depot_early_start_time );
        // cout<<"newtemp"<<temp<<endl<<"GlobalTrips[*it].depot_late_start_time"<<S.GlobalTrips[*it].depot_late_start_time<<endl;
         

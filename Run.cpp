@@ -76,12 +76,12 @@ void Run::RunMTPDPTWHF(std::string filename, int seed)
     LS.LocalOpt(Sbest,p);
     Sbest.displaySolution();
     Sbest.Calculate_Solution_Cost(p);
-    cout<<"second run----------------------------------------------------------------------------------------------------------------------------------------------"<<endl;
-    getchar();
+    // cout<<"second run----------------------------------------------------------------------------------------------------------------------------------------------"<<endl;
+    // getchar();
 
-    LS.LocalOpt(Sbest,p);
-    Sbest.displaySolution();
-    Sbest.Calculate_Solution_Cost(p);
+    // LS.LocalOpt(Sbest,p);
+    // Sbest.displaySolution();
+    // Sbest.Calculate_Solution_Cost(p);
     cout<<"solution= "<<endl;
     Sbest.Calculate_Solution_Cost(p);
         

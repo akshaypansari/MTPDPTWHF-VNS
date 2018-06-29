@@ -222,9 +222,9 @@ bool MultiTripFeasiblity(VehicleTrips& VT,const Problem& p, Solution& S)//this c
         //cout<<"new loop ="<<*it<<endl;
         //cout<<"GlobalTrips[*(it-1)].trip_duration"<<S.GlobalTrips[*(it-1)].trip_duration<<endl;
         //cout<<"oldtemp"<<temp<<endl;
-        temp=max(temp+S.GlobalTrips[*(it-1)].trip_duration+VT.TripVehicle.lunch_duration*!(S.GlobalTrips[*(it-1)].islunchtrip),
+        temp=max(temp+S.GlobalTrips[*(it-1)].trip_duration+VT.TripVehicle.lunch_duration *!(S.GlobalTrips[*(it-1)].islunchtrip),
                             S.GlobalTrips[*it].depot_early_start_time );
-       // cout<<"newtemp"<<temp<<endl<<"GlobalTrips[*it].depot_late_start_time"<<S.GlobalTrips[*it].depot_late_start_time<<endl;
+    //    cout<<"newtemp"<<temp<<endl<<"GlobalTrips[*it].depot_late_start_time"<<S.GlobalTrips[*it].depot_late_start_time<<endl;
         
         if( temp>S.GlobalTrips[*it].depot_late_start_time)
         {
@@ -459,9 +459,9 @@ bool BestInsertPlace(int request_index,const Problem& p, Solution& S, double cos
                                             {
                                                 // cout<<"***************************************************\n";
                                                 // cout<<"inside deepest loop"<<"-----------------------------------------------------"<<endl;                                    
-                                                cout<<"newaddedcost"<<newaddedcost<< endl;
                                                 // cout<<" falsetripnum = "<<*singletrip_it<<"\n";
                                                 // cout<<" realtripnum = "<<tempnum<<"\n\n";
+                                                // cout<<"newaddedcost"<<newaddedcost<< endl;
                                                 
                                                 best_it=tempnum;
                                                 vbest_it=vehicle_trip_it;
