@@ -103,6 +103,7 @@ Solution InitialSolution::InitialSolve(Problem& p, Solution& S)
     strip.cust_id.push_back(p.returndepot.id);
     strip.vehicletrip_id=0;//vehicle trip start from id 1
     S.GlobalTrips.push_back(strip);
+    S.servedSingleTrips.push_back(S.GlobalTrips.size()-1);//-----------------
     M1.vehicletrip_id=0;
     //assigning lunch trip to the vector
     SingleTrip lunchtrip;
@@ -112,7 +113,7 @@ Solution InitialSolution::InitialSolve(Problem& p, Solution& S)
     lunchtrip.islunchtrip=true;
     lunchtrip.vehicletrip_id=0;
     S.GlobalTrips.push_back(lunchtrip);
-
+    S.servedLunchTrips.push_back(S.GlobalTrips.size()-1);  //--------------
     S.MTrips.push_back(M1);//S.Mtrips[GlobalTrips[i].vehicletrip_id];
     bool isfeasible=ShrinkTrip_FeasiblityCheckingforSingleTrip(0,1,2,tempreq,p,S);
     
@@ -223,6 +224,8 @@ Solution InitialSolution::InitialSolve(Problem& p, Solution& S)
     cout<<S.GlobalTrips<<endl;
     cout<<S.MTrips<<endl;
     cout<<nooftimesreloopdone<<"###############################                           &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"<<endl;
+    // cout<<"number of trips scheduled"<< S.servedLunchTrips.size()<<"Num of vehicle "<<S.servedSingleTrips.size()<<endl;
+    // getchar();
     return  S;
 }
 
@@ -468,6 +471,8 @@ void createSingleTrip(LoadRequest& req, Problem& p, Solution& S)
     int needed_vehicle_type=p.getVehicleID(req);//return type of vehicle
     ShrinkTrip(stemp,p,S);
     S.GlobalTrips.push_back(stemp);
+    S.servedSingleTrips.push_back(S.GlobalTrips.size()-1);
+
     //cout<<"You are in createSingleTrip"<<endl;
     //getvehicleID gives the least cost vehicle number for the vehicle
     //try to insert the singletrip in each of the multitrip and get a good solution
@@ -515,6 +520,8 @@ void createSingleTrip(LoadRequest& req, Problem& p, Solution& S)
     lunchtrip.vehicletrip_id=S.MTrips.size();
     VT.vehicletrip_id=S.MTrips.size();
     S.GlobalTrips.push_back(lunchtrip);
+    S.servedLunchTrips.push_back(S.GlobalTrips.size()-1);
+
     VT.Multi.push_back(S.GlobalTrips.size()-1);
     //cout<<"S.GlobalTrips.size()-1"<<S.GlobalTrips.size()-1<<endl;
     S.MTrips.push_back(VT);

@@ -9,3 +9,5 @@ Total constraint
 7. multitrip constraint:
 a) lunch break assingnment
 b) time window of depot  arrival/departure
+
+cout<<"servedSingleTrips="<<Sbest.servedSingleTrips.size()<<"unservedSingleTrips="<<Sbest.unservedSingleTrips.size()<<"servedLunchTrips="<<Sbest.servedLunchTrips.size()<<"unservedLunchTrips="<<Sbest.unservedLunchTrips.size()<<endl;

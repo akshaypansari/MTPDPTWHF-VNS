@@ -9,6 +9,7 @@
 #include "LoadRequest.h"
 #include "InitialSolution.h"
 #include "LocalSearch.h"
+#include "Meta.h"
 
 // 
 //extern vector<SingleTrip> GlobalTrips;
@@ -70,12 +71,15 @@ void Run::RunMTPDPTWHF(std::string filename, int seed)
     }
     Sbest.displaySolution();
     cout<<"Total Cost"<<Sbest.total_solution_cost<<endl;
+    cout<<"servedSingleTrips="<<Sbest.servedSingleTrips.size()<<"unservedSingleTrips="<<Sbest.unservedSingleTrips.size()<<"servedLunchTrips="<<Sbest.servedLunchTrips.size()<<"unservedLunchTrips="<<Sbest.unservedLunchTrips.size()<<endl;
     getchar();
     // system("PAUSE");
     LocalSearch LS;
     LS.LocalOpt(Sbest,p);
     Sbest.displaySolution();
     Sbest.Calculate_Solution_Cost(p);
+    cout<<"servedSingleTrips="<<Sbest.servedSingleTrips.size()<<"unservedSingleTrips="<<Sbest.unservedSingleTrips.size()<<"servedLunchTrips="<<Sbest.servedLunchTrips.size()<<"unservedLunchTrips="<<Sbest.unservedLunchTrips.size()<<endl;
+    cout<<"globaltrips size="<<Sbest.GlobalTrips.size()<<endl;
     // cout<<"second run----------------------------------------------------------------------------------------------------------------------------------------------"<<endl;
     // getchar();
 
@@ -84,6 +88,17 @@ void Run::RunMTPDPTWHF(std::string filename, int seed)
     // Sbest.Calculate_Solution_Cost(p);
     cout<<"solution= "<<endl;
     Sbest.Calculate_Solution_Cost(p);
+    VNS V1;
+    V1.Perturb(Sbest,p,8);
+    // LocalSearch LS;
+    LS.LocalOpt(Sbest,p);
+    Sbest.displaySolution();
+    Sbest.Calculate_Solution_Cost(p);
+    cout<<"servedSingleTrips="<<Sbest.servedSingleTrips.size()<<"unservedSingleTrips="<<Sbest.unservedSingleTrips.size()<<"servedLunchTrips="<<Sbest.servedLunchTrips.size()<<"unservedLunchTrips="<<Sbest.unservedLunchTrips.size()<<endl;
+    cout<<"globaltrips size="<<Sbest.GlobalTrips.size()<<endl;
+    getchar();
+
+
         
 
     

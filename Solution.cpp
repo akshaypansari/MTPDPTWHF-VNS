@@ -48,6 +48,23 @@ double SingleTrip::Calculate_Trip_Distance(const Problem& p)
         trip_distance+=p.distance[cust_id[i]][cust_id[i-1]];
     return trip_distance;
 }
+
+
+void SingleTrip::Clear()
+{
+    depot_early_start_time=trip_cost=trip_duration=max_weight=0;
+    vid=0;//number_of_nodes_visited// trip_number
+    fix_trip=0;
+    vehicletrip_id=-1;
+    depot_late_start_time=1440;
+    islunchtrip=0;
+    trip_distance=0;
+    servicetime=0;
+    waitingtime=0;
+    cust_id.clear();
+    // cust_id.push_back(0);
+    // cust_id.push_back(0);
+}
 //vector<SingleTrip> GlobalTrips;
 
 //--------------------vehicletrips definitions below
@@ -75,7 +92,7 @@ double VehicleTrips::Calculate_Cost_of_MultiTrip(const Problem& p,  Solution* S)
 }
 //--------------------------------solution definition below
 Solution::Solution(){
-    total_solution_cost=0;num_of_vehicles=0;total_solution_cost=0;
+    total_solution_cost=0;total_solution_cost=0;
     solution_distance_travelled=0;
 }
 

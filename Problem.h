@@ -23,7 +23,7 @@ public:
     int checkcapacity(double demand, int typeconst);//to check
     void SortRequest();
     Vehicle get_vehicle(Node& tempnode);
-    int getVehicleID(LoadRequest &Req);
+    int getVehicleID(const LoadRequest &Req)const ;
 
     
     //vector of distance and request

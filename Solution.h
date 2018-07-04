@@ -23,6 +23,7 @@ class SingleTrip
     double waitingtime;
     double servicetime;
 
+    void Clear();
     std::vector<double> start_time_trip;//start time of trip
     //int number_of_nodes_visited;//how many nodes has been visited including the depot;
     //int v_type;//to which type the trip has been assigned
@@ -62,8 +63,13 @@ class Solution{
     Solution();
     ~Solution();
     std::vector<SingleTrip> GlobalTrips;
+    std::vector<int> servedSingleTrips;//contain GlobalTrips indices of served Trips
+    std::vector<int> unservedSingleTrips;//contain GlobalTrips indices of trips removed from the solution
+    std::vector<int> servedLunchTrips;//contain GlobalTrips indices of lunch trip
+    std::vector<int> unservedLunchTrips;//contain GlobalTrip indices of removed lunch trip
+
     std::vector<VehicleTrips> MTrips;
-    int num_of_vehicles;
+    // int num_of_vehicles;
     void Calculate_Solution_Cost(const Problem& p);
     double solution_distance_travelled;
     double total_solution_cost;

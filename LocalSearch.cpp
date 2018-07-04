@@ -103,7 +103,7 @@ bool LocalSearch::LocalSearch_operator1(Solution& solution,const Problem& p)
                                             cout<<"extra vehicle trip erased inside Local Operator1+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++vehicleerased"<<endl;
                                             // solution.MTrips.erase(solution.MTrips.begin()+tempStrip.vehicletrip_id);//have to update the solution also and also the removed singletrip vector
                                             solution.MTrips.erase(vehicle_trip_it);//have to update the solution also and also the removed singletrip vector
-                                            getchar();
+                                            // getchar();
                                             cout<<"hi1"<<endl;
                                             solution.updateMTrips();
                                             cout<<"hi2"<<endl;
@@ -182,9 +182,15 @@ bool LocalSearch::LocalSearch_operator1(Solution& solution,const Problem& p)
                                         if(vec.size()==1)
                                         {
                                             cout<<"extra vehicle trip erased inside Local Operator1+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++vehicleerased"<<endl;
+                                            int temp=vec[0];
+                                            // getchar();
+                                            solution.servedLunchTrips.erase(std::remove(solution.servedLunchTrips.begin(), solution.servedLunchTrips.end(),//next line
+                                                                                        temp), solution.servedLunchTrips.end());
+                                            cout<<"hi"<<endl;
+                                            solution.unservedLunchTrips.push_back(temp);
                                             // solution.MTrips.erase(solution.MTrips.begin()+tempStrip.vehicletrip_id);//have to update the solution also and also the removed singletrip vector
                                             solution.MTrips.erase(vehicle_trip_it);//have to update the solution also and also the removed singletrip vector
-                                            getchar();
+                                            // getchar();
                                             // cout<<"hi1"<<endl;
                                             solution.updateMTrips();
                                             // cout<<"hi2"<<endl;
@@ -237,7 +243,7 @@ bool LocalSearch::LocalSearch_operator2(Solution& solution,const Problem& p)//a 
 
     Solution Sbest=solution;
     int request_id;//gives the id of the 
-    unsigned GlobalTrip_size=solution.GlobalTrips.size();
+    unsigned TrueSingleTrip_size=solution.servedSingleTrips.size();
     double cost=0;//vehicle removed(if)+customerunassigned+tripdistanceremoved
     int static seed=0;
     std::vector<SingleTrip>::iterator iter;
@@ -253,11 +259,13 @@ bool LocalSearch::LocalSearch_operator2(Solution& solution,const Problem& p)//a 
         }
         // srand(seed++);  
         /*find a random trip which is non empty*/
-        RandomTripNumber=rand()%GlobalTrip_size;
+        RandomTripNumber=rand()%TrueSingleTrip_size;
+        RandomTripNumber=solution.servedSingleTrips[RandomTripNumber];
         // cout<<"randomtripnumber="<<RandomTripNumber<<endl;//debug
 
         /* iter represent the current singletrip which customer we want to remove*/
         iter = std::next(solution.GlobalTrips.begin(), RandomTripNumber);
+        
         SingleTrip temps=*iter;
         if(iter->cust_id.size()>2)/*size of randomtrips more than 2*/
         {
@@ -289,16 +297,24 @@ bool LocalSearch::LocalSearch_operator2(Solution& solution,const Problem& p)//a 
             }
         }
     }
-   int request_index=solution.unrouted_cust_request_id[rand()%solution.unrouted_cust_request_id.size()];//contain index of request in request
+    int request_index=solution.unrouted_cust_request_id[rand()%solution.unrouted_cust_request_id.size()];//contain index of request in request
     bool inserted=BestInsertPlace(request_index, p, solution, cost,m_LS2_bookkeep);
     if(iter->cust_id.size()==2&&inserted)
     {
         solution.MTrips[iter->vehicletrip_id].Multi.erase(std::remove(solution.MTrips[iter->vehicletrip_id].Multi.begin(), solution.MTrips[iter->vehicletrip_id].Multi.end(),//next line
                                                                     RandomTripNumber), solution.MTrips[iter->vehicletrip_id].Multi.end());
+        solution.servedSingleTrips.erase(std::remove(solution.servedSingleTrips.begin(), solution.servedSingleTrips.end(),//next line
+                                                                    RandomTripNumber), solution.servedSingleTrips.end());
+        solution.unservedSingleTrips.push_back(RandomTripNumber);                                                                                                                               
         if(solution.MTrips[iter->vehicletrip_id].Multi.size()==1/*check that it is also lunch trip*/)
         {
             cout<<"extra vehicle trip erased+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++vehicleerased"<<endl;
+            int temp=solution.MTrips[iter->vehicletrip_id].Multi[0];
             // getchar();
+            solution.servedLunchTrips.erase(std::remove(solution.servedLunchTrips.begin(), solution.servedLunchTrips.end(),//next line
+                                                         temp), solution.servedLunchTrips.end());
+            cout<<"hi"<<endl;
+            solution.unservedLunchTrips.push_back(temp);
             solution.MTrips.erase(solution.MTrips.begin()+iter->vehicletrip_id);//have to update the solution also and also the removed singletrip vector
             solution.updateMTrips();
             
@@ -335,7 +351,9 @@ bool LocalSearch :: LocalSearch_operator3(Solution& solution,const Problem& p)//
         std::vector<VehicleTrips>::iterator vtrip1;
         std::vector<VehicleTrips>::iterator vtrip2;
         LoadRequest req1,req2;
-        unsigned GlobalTrip_size=solution.GlobalTrips.size();
+        // unsigned GlobalTrip_size=solution.GlobalTrips.size();
+        unsigned TrueSingleTrip_size=solution.servedSingleTrips.size();
+
         double cost=0;//vehicle removed(if)+customerunassigned+tripdistanceremoved
         int static seed=0;
         int RandomTripNumber1,RandomTripNumber2;
@@ -351,7 +369,12 @@ bool LocalSearch :: LocalSearch_operator3(Solution& solution,const Problem& p)//
 
 
             // cout<<"1"<<endl;
-            RandomTripNumber1=rand()%GlobalTrip_size;
+            RandomTripNumber1=rand()%TrueSingleTrip_size;
+            RandomTripNumber1=solution.servedSingleTrips[RandomTripNumber1];
+            // RandomTripNumber2=rand()%TrueSingleTrip_size;
+            // RandomTripNumber2=solution.servedSingleTrips[RandomTripNumber2];
+
+
             // cout<<"randomtripnumber="<<RandomTripNumber1<<endl;//debug
 
             /* iter1 represent the current singletrip which customer we want to remove*/
@@ -363,7 +386,9 @@ bool LocalSearch :: LocalSearch_operator3(Solution& solution,const Problem& p)//
             {
                 continue;
             }
-            RandomTripNumber2=rand()%GlobalTrip_size;        
+            RandomTripNumber2=rand()%TrueSingleTrip_size;
+            RandomTripNumber2=solution.servedSingleTrips[RandomTripNumber2];
+            // RandomTripNumber2=rand()%GlobalTrip_size;        
             iter2= std::next(solution.GlobalTrips.begin(), RandomTripNumber2);
             SingleTrip temps2=*iter2;
 
@@ -463,7 +488,7 @@ void LocalSearch::LocalOpt( Solution& solution, const Problem& p)
     {
         m_LS2_bookkeep[i]=0;
     }
-    int total_local_search_operators=1500;
+    int total_local_search_operators=solution.servedSingleTrips.size()*solution.servedSingleTrips.size();
     //assumed the current solution to be the best solution available
     Solution Sbest=solution;
     //assume there are n types of localsearch operation
