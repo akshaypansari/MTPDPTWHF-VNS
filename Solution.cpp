@@ -155,14 +155,16 @@ void Solution::displaySolution()
                 cout<<"SingleTripNumber="<<j<<" ";
                 cout<<"This is the Trip Number "<<k;
                 cout<<temps.cust_id<<"     ";
-                cout<<" earlystarttime "<< temps.depot_early_start_time<<" " <<starttime<<" <latestarttime"<<temps.depot_late_start_time<<"  && duration"<<temps.trip_duration<<endl;
+                // cout<<" earlystarttime "<< temps.depot_early_start_time<<" " <<starttime<<" <latestarttime"<<temps.depot_late_start_time<<"  && duration"<<temps.trip_duration<<endl;
+                cout<< "  duration"<<temps.trip_duration<<endl;
                 starttime=starttime+temps.trip_duration+30.;//MTrips[i].TripVehicle.lunch_end;
                 starttime=max(starttime,temps.depot_early_start_time);    
             }
             else
             {
                 cout<<"This is Lunch Trip for this vehicle";
-                cout<<starttime<<" <latestarttime"<<temps.depot_late_start_time<<endl;
+                cout<<endl;
+                // cout<<starttime<<" <latestarttime"<<temps.depot_late_start_time<<endl;
                 starttime=starttime+temps.trip_duration;                
             }
             

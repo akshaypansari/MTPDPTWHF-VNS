@@ -39,27 +39,13 @@ ostream& operator<< (ostream& out, const vector<VehicleTrips> v) {
     return out;
 }
 
-//typedef enum { false, true } bool;
-//we can also use different integer to denote different infeasibility
-//so that it will help in taking corrective action
-//like we don't need to insert any lunch time inside
-//also we don't need to 
-
 //extern vector<SingleTrip> GlobalTrips;
 bool ShrinkTrip_FeasiblityCheckingforSingleTrip(int tripindex,const int pindex,const int dindex,
                                                 LoadRequest& tempreq, Problem& p,Solution& S);
 void InsertRequest(int tripindex,int pindex,int dindex,
                     LoadRequest& tempreq, Problem& p,Solution& S);
 
-// bool compareTripEarlyStartTime_duration(int a, int b)
-// {
-//     if(GlobalTrips[a].depot_early_start_time<GlobalTrips[b].depot_early_start_time)
-//         return true;
-//     else if(GlobalTrips[a].depot_early_start_time==GlobalTrips[b].depot_early_start_time
-//             &&  GlobalTrips[a].trip_duration<GlobalTrips[b].trip_duration)
-//         return true;
-//     return false;
-// }
+
 
 bool MultiTripFeasiblity(VehicleTrips& VT,Problem &p, Solution& S);
 void createSingleTrip(LoadRequest& req, Problem& p, Solution& S);
@@ -98,8 +84,7 @@ Solution InitialSolution::InitialSolve(Problem& p, Solution& S)
     SingleTrip strip;
 //depot id entered
     strip.cust_id.push_back(p.depot.id);
-    // strip.cust_id.push_back(tempreq.pickup.id);
-    // strip.cust_id.push_back(tempreq.delivery.id);
+
     strip.cust_id.push_back(p.returndepot.id);
     strip.vehicletrip_id=0;//vehicle trip start from id 1
     S.GlobalTrips.push_back(strip);
@@ -119,12 +104,9 @@ Solution InitialSolution::InitialSolve(Problem& p, Solution& S)
     
     if(isfeasible)
     {
-        //cout<<"Isfeasible"<<"we are inside first customer insertion"<<endl;
         InsertRequest(0,1,2,tempreq,p,S);//inside insert request we also need to calculate the cost
     //-------------------- to complete the Insert Request
         temp_unrouted_custumer.erase(temp_unrouted_custumer.begin());
-       // cout<<"first assigned customer deleted"<<endl;        
-       // cout<<"temp_unrouted_custumer[0]"<<temp_unrouted_custumer[0]<<endl<<endl<<endl;
     }
 
     cout<<"loop began main******"<<endl;
@@ -138,7 +120,6 @@ Solution InitialSolution::InitialSolve(Problem& p, Solution& S)
        // cout<<"Now Id is"<<tempreq.rid<<endl<<endl<<endl<<endl;
         for(auto i=0;i<S.GlobalTrips.size();i++)//make a bettr iterator based on some information like multi trip etc.
         {
-            //cout<<"second loop"<<endl;
             if(S.GlobalTrips[i].islunchtrip!=1)//to check using a variable;
             //define new variable;
             {
@@ -162,11 +143,7 @@ Solution InitialSolution::InitialSolve(Problem& p, Solution& S)
                                 nooftimesreloopdone++;
                                 continue;
                             }
-                            
-
-                                //    cout<<"S.GlobalTrips[i].cust_id.size()===========  "<<S.GlobalTrips[i].cust_id.size()<<endl;               
-                            //int index_i=-1,index_j=-1;
-                        // cout<<endl<<S.GlobalTripsize<<endl;
+                           
                             for(auto j=1;j<GlobalTripSize;j++)//first index
                             {
                                 for(auto k=j+1;k<GlobalTripSize+1;k++)//second index
@@ -179,7 +156,6 @@ Solution InitialSolution::InitialSolve(Problem& p, Solution& S)
                                     //-------------------- to complete the Insert Request
                                         temp_unrouted_custumer.erase(temp_unrouted_custumer.begin());
                                         //alt+shift change the language
-                                    // cout<<"Request inserted= "<<tempreq.rid<<endl<<endl<<endl;
                                         isinserted=true;
                                         break;
                                     }
@@ -210,14 +186,6 @@ Solution InitialSolution::InitialSolve(Problem& p, Solution& S)
             createSingleTrip(tempreq,p,S);
             temp_unrouted_custumer.erase(temp_unrouted_custumer.begin());
             isinserted=true;
-
-            //cases if route is created and added to the multitrip and 
-            //first make anew trip and try to  add it to exissting vehicletrips
-            //if okay then it is inserted
-            //other wise make a new multi trip just as done above //also add lunch service time to trips
-            //erase the request
-            //if everuthhing done then find the total cost and display solution
-            //find operators then
         }
     }
     //cout<<"bi"<<endl;
@@ -234,16 +202,12 @@ Solution InitialSolution::InitialSolve(Problem& p, Solution& S)
 bool ShrinkTrip_FeasiblityCheckingforSingleTrip(int tripindex,const int pindex,const int dindex,
                                                 LoadRequest& tempreq, Problem& p,Solution& S)
 {
-    //cout<<"MainShrinkTrip"<<endl;
     SingleTrip& temps= S.GlobalTrips[tripindex];//is this correct
    // cout<<temps.islunchtrip<<" "<<temps.cust_id[0];
     temps.cust_id.insert(temps.cust_id.begin()+pindex,tempreq.pickup.id);//.insert(temps.cust_id.begin()+pindex);
     temps.cust_id.insert(temps.cust_id.begin()+dindex,tempreq.delivery.id);//
-    //cout<<"request inserted for checking"<<endl;
-    //see the structure of entering the number in the vector;
     double early_start=p.depot.start_time ,late_start=p.depot.end_time,duration=0;
     double totaltripdistance=0,max_capacity=0,l_waittime=0;
-  //  bool feasible = true;
     for (auto i=1;i<temps.cust_id.size();i++)//checking and feasibility and finding the time window
     {
         Node N0=p.getNode(temps.cust_id[i-1]);//NO=
@@ -267,8 +231,6 @@ bool ShrinkTrip_FeasiblityCheckingforSingleTrip(int tripindex,const int pindex,c
             temps.cust_id.erase(temps.cust_id.begin()+pindex);
             return false;
         }
-        //cout<<"early_start "<<early_start<<" late_start "<<late_start<<" duration"<<duration<<endl;
-       // cout<<" li "<<li<<endl;
        // capacity+=tempweight;declared below
 //--------------------------------checking for time window
         if(early_start>li)
@@ -296,9 +258,7 @@ bool ShrinkTrip_FeasiblityCheckingforSingleTrip(int tripindex,const int pindex,c
             
         }
 //--------------------------------capacity constraint checking
-        //temps.weight_to_carry=max(capacity,capacity+tempweight);
-        
-        //max_capacity+=tempweight;
+    
         totaltripdistance+=d01;        
         max_capacity=std::max(max_capacity,max_capacity+tempweight);
         //cout<<"capacity"<<capacity<<"S.MTrips[temps.vehicletrip_id].TripVehicle.Capacity"<<S.MTrips[temps.vehicletrip_id].TripVehicle.Capacity<<endl;
@@ -310,15 +270,7 @@ bool ShrinkTrip_FeasiblityCheckingforSingleTrip(int tripindex,const int pindex,c
             temps.cust_id.erase(temps.cust_id.begin()+dindex);
             temps.cust_id.erase(temps.cust_id.begin()+pindex);
             return false;
-        }
-        // if(feasible)//checking for multitrip constraint
-        // {
-        //  //   feasible=MultiTripFeasibility(multitrip(vector of singletrip), vehicleno, );
-        // }
-        //check capacity constraint everytime, check duration contraint everytime; check time wndow constraint
-        //can we use static here to define a fix quantity;
-        //cout<<"i am in shrinktripbigger version inside the loop"<<endl;
-        
+        }     
     }
     //if capacity and time window is feasible then temporarily change the temps and check for multitripfeasibility
     //cout<<"p.max_travel_time"<<p.max_travel_time<< endl;
@@ -406,21 +358,14 @@ void InsertRequest(int tripindex,int pindex,int dindex,
     temps.trip_duration=duration;
     temps.max_weight=max_capacity;
     temps.waitingtime=l_waittime;
-    temps.trip_distance=totaltripdistance;
-    
-    
-    //-----------------------------------to modify below
-    //temps.vehicletrip_id=S.GlobalTrips[tripindex].vehicletrip_id;//to modify
-  //     UpdateMultipleTrip(S.MTrips[temps.vehicletrip_id],p);
-    
+    temps.trip_distance=totaltripdistance;    
 }
 
 //----------------------Multitrip Feasibility checking
 bool MultiTripFeasiblity(VehicleTrips& VT,Problem &p, Solution& S)//this contains total trip of single variable
 {
-  //  cout<<"Yout are now in MultiTripFeasiblity"<<endl;
+  
     // sort multitrip on the basis of trip starttime window and then on duration;
-    //cout<<"old VT.multi.size()"<< VT.Multi.size()<<endl;   
     //std::sort(VT.Multi.begin(),VT.Multi.end(), compareTripEarlyStartTime_duration);
 
         int static count=0;
@@ -443,16 +388,11 @@ bool MultiTripFeasiblity(VehicleTrips& VT,Problem &p, Solution& S)//this contain
    // cout<<"S.GlobalTrips.size()"<<S.GlobalTrips.size()<<endl;
     double temp;
     temp= S.GlobalTrips[ VT.Multi[0]].depot_early_start_time;
-   // cout<<"GlobalTrips[ VT.Multi[0]].depot_early_start_time "<<S.GlobalTrips[ VT.Multi[0]].depot_early_start_time<<endl;
     for(auto it=VT.Multi.begin()+1;it!=VT.Multi.end();it++)
     {
-        //cout<<"new loop ="<<*it<<endl;
-        //cout<<"GlobalTrips[*(it-1)].trip_duration"<<S.GlobalTrips[*(it-1)].trip_duration<<endl;
-        //cout<<"oldtemp"<<temp<<endl;
+        
         temp=max(temp+S.GlobalTrips[*(it-1)].trip_duration+p.rest_time*!(S.GlobalTrips[*(it-1)].islunchtrip||S.GlobalTrips[*(it)].islunchtrip),//assumption lunch break time is more than disinfectiontime
                             S.GlobalTrips[*it].depot_early_start_time );
-       // cout<<"newtemp"<<temp<<endl<<"GlobalTrips[*it].depot_late_start_time"<<S.GlobalTrips[*it].depot_late_start_time<<endl;
-        
         if( temp>S.GlobalTrips[*it].depot_late_start_time)
         {
             return false;
@@ -484,15 +424,12 @@ void createSingleTrip(LoadRequest& req, Problem& p, Solution& S)
     {
        // cout<<"you are checking old multrips to assign customers"<<endl;
         VTid++;
-        //cout<<"VTid"<<VTid<<endl;
-       // cout<<"it->TripVehicle.type = "<<it->TripVehicle.type<<" needed_vehicle_type = "<<needed_vehicle_type<<endl;
+
         //assign it to any vehicle already present  but that should less than type_cons
         if(it->TripVehicle.type>=needed_vehicle_type&&it->TripVehicle.type< req.pickup.type_const)
         {
             //inserting only if vehicle type matches
             int tripAddedNumber=S.GlobalTrips.size()-1;
-            //cout<<"tripAddedNumber=GlobalTrips.size()-1 = "<<tripAddedNumber<<endl;
-            //Try to insert in the current multitrip
             it->Multi.push_back(tripAddedNumber);//changes done here
             bool multifeas=MultiTripFeasiblity(*it,p,S);//sending the vehicletrip object to check for feasibility of multitrip
             if(multifeas)
@@ -533,11 +470,6 @@ void createSingleTrip(LoadRequest& req, Problem& p, Solution& S)
     if(feas)
     {
         cout<<S.MTrips.size()<<endl;
-       // cout<<"new vehicle trip is assigned and route created"<<endl;
-       // cout<<"bi"<<endl;
-        // cout<<S.GlobalTrips<<endl;
-        // cout<<S.MTrips<<endl;
-        //cout<<"bi"<<endl;
     }
     else
     {
@@ -686,3 +618,34 @@ void ShrinkTrip(SingleTrip& stemp,Problem& p, Solution& S)
 //     return true;
 
 // }
+  //cases if route is created and added to the multitrip and 
+            //first make anew trip and try to  add it to exissting vehicletrips
+            //if okay then it is inserted
+            //other wise make a new multi trip just as done above //also add lunch service time to trips
+            //erase the request
+            //if everuthhing done then find the total cost and display solution
+            //find operators then
+  // if(feasible)//checking for multitrip constraint
+        // {
+        //  //   feasible=MultiTripFeasibility(multitrip(vector of singletrip), vehicleno, );
+        // }
+        //check capacity constraint everytime, check duration contraint everytime; check time wndow constraint
+        //can we use static here to define a fix quantity;
+        //cout<<"i am in shrinktripbigger version inside the loop"<<endl;
+
+
+// bool compareTripEarlyStartTime_duration(int a, int b)
+// {
+//     if(GlobalTrips[a].depot_early_start_time<GlobalTrips[b].depot_early_start_time)
+//         return true;
+//     else if(GlobalTrips[a].depot_early_start_time==GlobalTrips[b].depot_early_start_time
+//             &&  GlobalTrips[a].trip_duration<GlobalTrips[b].trip_duration)
+//         return true;
+//     return false;
+// }
+
+
+//typedef enum { false, true } bool;
+//we can also use different integer to denote different infeasibility
+//so that it will help in taking corrective action
+//like we don't need to insert any lunch time inside

@@ -39,7 +39,7 @@ void Run::RunMTPDPTWHF(std::string filename, int seed)
     int SbestmtripsSize=10000;
     Problem p;
     // std::srand(1000);
-    for(int t=0;t<2;t++)//edits//best till now is at t=10 qhwn seed was 1000
+    for(int t=0;t<10;t++)//edits//best till now is at t=10 qhwn seed was 1000
     {   
  
     p.LoadProblem(fname);
@@ -63,36 +63,29 @@ void Run::RunMTPDPTWHF(std::string filename, int seed)
         {
             Sbest=S_init;
             SbestmtripsSize=S_init.MTrips.size();
-            //S_init.~Solution();
             cout<<"t value "<<t<<endl;
-          }
-    //cout<< "hi///// "<<Sbest.total_solution_cost<<endl;    
-        
+          }        
     }
     Sbest.displaySolution();
     cout<<"Total Cost"<<Sbest.total_solution_cost<<endl;
     cout<<"servedSingleTrips="<<Sbest.servedSingleTrips.size()<<"unservedSingleTrips="<<Sbest.unservedSingleTrips.size()<<"servedLunchTrips="<<Sbest.servedLunchTrips.size()<<"unservedLunchTrips="<<Sbest.unservedLunchTrips.size()<<endl;
     getchar();
-    // system("PAUSE");
     LocalSearch LS;
     LS.LocalOpt(Sbest,p);
     Sbest.displaySolution();
     Sbest.Calculate_Solution_Cost(p);
     cout<<"servedSingleTrips="<<Sbest.servedSingleTrips.size()<<"unservedSingleTrips="<<Sbest.unservedSingleTrips.size()<<"servedLunchTrips="<<Sbest.servedLunchTrips.size()<<"unservedLunchTrips="<<Sbest.unservedLunchTrips.size()<<endl;
     cout<<"globaltrips size="<<Sbest.GlobalTrips.size()<<endl;
-    // cout<<"second run----------------------------------------------------------------------------------------------------------------------------------------------"<<endl;
+    cout<<"Press enter to start the meta heuristics"<<endl;
     getchar();
-
-    // LS.LocalOpt(Sbest,p);
-    // Sbest.displaySolution();
-    // Sbest.Calculate_Solution_Cost(p);
+    // cout<<"second run----------------------------------------------------------------------------------------------------------------------------------------------"<<endl;
     cout<<"solution= "<<endl;
     Sbest.Calculate_Solution_Cost(p);
     Solution SbestGlobal=Sbest;
     int iteration=0;
     int numbertobedeleted=5;
     std::vector<int> bestdeletednum;
-    while(iteration<100&&numbertobedeleted<p.num_of_request/3)
+    while(iteration<100&&numbertobedeleted<p.num_of_request/3)//parameters self declared
     {
         cout<<"iteration"<<iteration<<endl;
     // Solution Stempbest=Sbest;
@@ -100,7 +93,7 @@ void Run::RunMTPDPTWHF(std::string filename, int seed)
         V1.Perturb(Sbest,p,numbertobedeleted);
         // LocalSearch LS;
         LS.LocalOpt(Sbest,p);
-        Sbest.displaySolution();
+        // Sbest.displaySolution();
         Sbest.Calculate_Solution_Cost(p);
         if(Sbest.total_solution_cost<SbestGlobal.total_solution_cost)
         {

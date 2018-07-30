@@ -389,7 +389,7 @@ void Erase_ID_from_Trip(std::vector<SingleTrip>::iterator temp_strip,
 
 
 
-bool BestInsertPlace(int request_index,const Problem& p, Solution& S, double cost, std::vector<bool>& bookkeep )
+bool BestInsertPlace(int request_index,const Problem& p, Solution& S, double cost, std::vector<bool>& bookkeep, double fixed_cost )
 {
     LoadRequest req=p.requests[request_index];
     double PNodeSerTime=req.pickup.service_time;
@@ -485,44 +485,28 @@ bool BestInsertPlace(int request_index,const Problem& p, Solution& S, double cos
     if(curr_cost+cost<0)
     {
         cout<<"curr_cost+cost== "<<curr_cost+cost<<endl;
-        // cout<<"pindex=="<<pbest<<"dindex=="<<dbest<<endl;
-        // cout<<"iterator trip"<<S.GlobalTrips[best_it].vehicletrip_id<<"  other info"<<S.GlobalTrips[best_it].trip_cost<<endl;
-        // cout<<"hi3";
-        // cout<<"size=="<<S.GlobalTrips[best_it].cust_id.size()<<endl;
         //add request to the singletrip_it
         S.GlobalTrips[best_it].cust_id.insert(S.GlobalTrips[best_it].cust_id.begin()+pbest,req.pickup.id);//.insert(temps.cust_id.begin()+pindex);
-        // cout<<"hi4";        
         S.GlobalTrips[best_it].cust_id.insert(S.GlobalTrips[best_it].cust_id.begin()+dbest,req.delivery.id);//
-        // cout<<"hi2"<<endl;
-        if(S.GlobalTrips[best_it].cust_id.size()==4)
-        {
-            //
-        }
-        // cout<<"hi"<<endl;
         ShrinkTrip(S.GlobalTrips[best_it],p,S);
         //remove request from the unserved request
-        // cout<<"iterator trip"<<S.GlobalTrips[best_it].vehicletrip_id<<"  other info"<<S.GlobalTrips[best_it].trip_cost<<endl;
         S.unrouted_cust_request_id.erase(std::remove(S.unrouted_cust_request_id.begin(), S.unrouted_cust_request_id.end(),request_index), S.unrouted_cust_request_id.end());
-        //
-        // cout<<"Size of unrouted customer="<<S.unrouted_cust_request_id.size()<<endl;
+        if(-curr_cost-cost==fixed_cost)
+        {
+            return false;
+        }
         return true;
     }
     else if(curr_cost+cost==0)
     {
-        // cout<<"curr+cost==0"<<endl;
-        // cout<<"curr_cost+cost== "<<curr_cost+cost<<endl;
-        // cout<<"pindex=="<<pbest<<endl<<"dindex=="<<dbest<<endl;
-        // cout<<"iterator trip"<<S.GlobalTrips[best_it].vehicletrip_id<<"  other info"<<S.GlobalTrips[best_it].trip_cost<<endl;
-        //add request to the singletrip_it
+        
         S.GlobalTrips[best_it].cust_id.insert(S.GlobalTrips[best_it].cust_id.begin()+pbest,req.pickup.id);//.insert(temps.cust_id.begin()+pindex);
         S.GlobalTrips[best_it].cust_id.insert(S.GlobalTrips[best_it].cust_id.begin()+dbest,req.delivery.id);//
 
         ShrinkTrip(S.GlobalTrips[best_it],p,S);
-        //remove request from the unserved request
-        // cout<<"iterator trip"<<S.GlobalTrips[best_it].vehicletrip_id<<"  other info"<<S.GlobalTrips[best_it].trip_cost<<endl;
+        
         S.unrouted_cust_request_id.erase(std::remove(S.unrouted_cust_request_id.begin(), S.unrouted_cust_request_id.end(),request_index), S.unrouted_cust_request_id.end());
-        //
-        //    cout<<"Size of unrouted customer="<<S.unrouted_cust_request_id.size()<<endl;
+
         bookkeep[request_index]=1;
         return false;
     }
@@ -546,18 +530,9 @@ bool bool_insert_customer(SingleTrip& temps1,SingleTrip& temps2, int customer_id
 
     double PNodeSerTime2 = req2.pickup.service_time;
     double DNodeSerTime2 = req2.delivery.service_time;
-    // for(auto m = 1;  m  < customersize2-1 ;  m++)
-    // {
-    //     if( p.request_feasibility [ p.getRequestID(req2.pickup.id) ] [ p.getRequestID(temps2.cust_id[m]) ] == 0)
-    //     {
-    //         return false;
-    //     }     
-    // }
-
-    // cout<<"1"<<endl;
+  
     double curr_cost1 = 1000000000;
     int p1best,d1best;
-    // cout<<"customer_size"<<endl;
     int customersize1=temps1.cust_id.size();
     if(temps1.trip_duration-temps1.waitingtime+PNodeSerTime1+DNodeSerTime1<p.max_travel_time//trip duration-waiting time+service<=duration)
     && (temps1.depot_late_start_time+p.max_travel_time)>std::max(req1.pickup.start_time,req1.delivery.start_time))
@@ -591,14 +566,11 @@ bool bool_insert_customer(SingleTrip& temps1,SingleTrip& temps2, int customer_id
     }
 
     
-    // cout<<"2"<<endl;
     double curr_cost2 = 1000000000;
     int p2best,d2best;
-    // cout<<"customer_size"<<endl;
     if(temps2.trip_duration-temps2.waitingtime+PNodeSerTime2+DNodeSerTime2<p.max_travel_time//trip duration-waiting time+service<=duration)
     && (temps2.depot_late_start_time+p.max_travel_time)>std::max(req2.pickup.start_time,req2.delivery.start_time))
     {
-        // cout<<"bug1"<<endl;
         for(auto m = 1;  m  < customersize2-1 ;  m++)
         {
 
@@ -607,13 +579,10 @@ bool bool_insert_customer(SingleTrip& temps1,SingleTrip& temps2, int customer_id
                 return false;
             }     
         }
-        // cout<<"bug1.75"<<endl;
         for(auto pindex=1 ; pindex < customersize2 ; pindex++)
         {
             for(auto dindex=pindex+1 ; dindex < customersize2+1 ; dindex++)
                 {
-                    // cout<<"pindex == "<<pindex<<"dindex == "<<dindex;
-                    // cout<<"bug2"<<endl;
                     double newaddedcost = ShrinkTripBI (pindex, dindex, temps2, req2, p, solution);//returns cost of insertion
                     if ( newaddedcost<curr_cost2 )
                     {
@@ -789,23 +758,15 @@ void AddCustomers(const Problem& p, Solution& solution)
     {
         cout<<"solution.unrouted_cust_request_id.size()="<<solution.unrouted_cust_request_id.size()<<endl;
         custInsertinfo CostMatrix[solution.unrouted_cust_request_id.size()][solution.servedSingleTrips.size()];
-
-        // std::vector<double> MinCustCost;
-        // MinCustCost.resize(solution.unrouted_cust_request_id.size(),infinity);
-
-        //Try to insert the first customer in the trips and check for the feasibility too
-        //Start with all the
         for(auto unserved_id=0;unserved_id<solution.unrouted_cust_request_id.size();unserved_id++)
         {
-            // int best_vehicle_id,best_pindex,best_dindex,best_cost=1000000000;
-            // int localcust_index=solution.unrouted_cust_request_id[unserved_id];//gives index of unserved customer
+            
             LoadRequest req=p.requests[solution.unrouted_cust_request_id[unserved_id]];
             cout<<"req.pickup.id"<<req.pickup.id<<endl;            
             double PNodeSerTime=req.pickup.service_time;
             double DNodeSerTime=req.delivery.service_time;
 
-            //Get the best position of the index in the trip
-            //-----------------------------------------------start for the trips
+            
             for(auto trip_id=0;trip_id!=solution.servedSingleTrips.size();trip_id++)
             {
                 int nooftimesreloopdone=0;
@@ -819,7 +780,7 @@ void AddCustomers(const Problem& p, Solution& solution)
                     std::exit(0);
                 }
                 VehicleTrips& vtemp=solution.MTrips[tempStrip.vehicletrip_id];
-                //Insert the customer in all the trip and find the minimum cost
+               
                 if(vtemp.TripVehicle.type<req.pickup.type_const&& 
                     req.pickup.demand<=vtemp.TripVehicle.Capacity)
                 {
@@ -828,8 +789,7 @@ void AddCustomers(const Problem& p, Solution& solution)
                     {
                         cout<<"1"<<endl;
                                 int customersize = tempStrip.cust_id.size();
-                                // cout<<endl<<"customersize"<<customersize<<endl;
-                                // cout<<tempStrip.cust_id;
+                                
                                 for(auto m=1;m<customersize-1;m++)
                                 {
                                     if( p.request_feasibility[p.getRequestID(req.pickup.id)][p.getRequestID(tempStrip.cust_id[m])]==0)
@@ -854,11 +814,7 @@ void AddCustomers(const Problem& p, Solution& solution)
                                             double newaddedcost=ShrinkTripBI(pindex,dindex,tempStrip,req,p,solution);//returns cost of insertion
                                             if(newaddedcost<curr_cost)
                                             {
-                                                // cout<<"***************************************************\n";
-                                                // cout<<"inside deepest loop"<<"-----------------------------------------------------"<<endl;                                    
-                                                // cout<<" falsetripnum = "<<*singletrip_it<<"\n";
-                                                // cout<<" realtripnum = "<<tempnum<<"\n\n";
-                                                // cout<<"newaddedcost"<<newaddedcost<< endl;
+                                                
                                                 cout<<"unserved_id == "<<unserved_id<<"trip_id == "<<trip_id<<"pindex == "<<pindex<<"dindex == "<<dindex<<"customersize == "<<customersize<<endl;
                                                 // cout<<"customersize == "<<customersize;
                                                 CostMatrix[unserved_id][trip_id].tripindex=trip_id;
@@ -941,12 +897,7 @@ void AddCustomers(const Problem& p, Solution& solution)
         {
             //Insert it in new route;
             cout<<" the cost of insertion is infinity so have to make a new route:Press enter to move forward"<<endl;
-            //Make a new trip preferably take from the already created trip and clear that trip and insert it inside that
-
-            // int pushback_id=solution.unservedSingleTrips.back();
-            // solution.unservedSingleTrips.pop_back();
-            // solution.GlobalTrips[pushback_id].Clear();
-            // solution.servedSingleTrips.push_back(pushback_id);
+           
             Edited_createSingleTrip(p.requests[solution.unrouted_cust_request_id[ 0]],p,solution);
             solution.unrouted_cust_request_id.erase(std::remove(solution.unrouted_cust_request_id.begin(), solution.unrouted_cust_request_id.end(),//next line
                                                                     solution.unrouted_cust_request_id[ 0]), solution.unrouted_cust_request_id.end());
@@ -957,20 +908,13 @@ void AddCustomers(const Problem& p, Solution& solution)
         cout<<"If all numbeer are not infinity"<<endl;
         CostMatrix[maxRegret_custID][tripmincost_id].Display();
         custInsertinfo temp=CostMatrix[maxRegret_custID][tripmincost_id];
-        // solution.displaySolution();
-        // solution.Calculate_Solution_Cost(p);
+       
         InsertRequest(solution.servedSingleTrips[ temp.tripindex],temp.pindex,temp.dindex,p.requests[solution.unrouted_cust_request_id[ maxRegret_custID]],p,solution);
         solution.unrouted_cust_request_id.erase(std::remove(solution.unrouted_cust_request_id.begin(), solution.unrouted_cust_request_id.end(),//next line
                                                                     solution.unrouted_cust_request_id[ maxRegret_custID]), solution.unrouted_cust_request_id.end());
         solution.displaySolution();
         solution.Calculate_Solution_Cost(p);
         cout<<"hierror"<<endl;
-
-        // CostMatrix[][].~custInsertinfo();
-        // getchar();
-        
-        //Here do the calculation and insert the customer, otherwise put in the insertion list;
-        //Subtract the minimum of the row value from the row and 
     }
 }
 
@@ -979,13 +923,20 @@ void Edited_createSingleTrip(const LoadRequest& req,const Problem& p, Solution& 
 {
     if(S.unservedSingleTrips.size()==0)
     {
-        cout<<"Error in Number of LunchTrips"<<endl;
+        cout<<"Error in Number of SingleTrips"<<endl;
         // S.unservedSingleTrips.push_back(S.GlobalTrips.size());
         SingleTrip tempSingleTrip;
         S.GlobalTrips.push_back(tempSingleTrip);
         S.unservedSingleTrips.push_back(S.GlobalTrips.size()-1);
     }
-
+    if(S.unservedLunchTrips.size()==0)
+    {
+        cout<<"Error in Number of LunchTrips"<<endl;
+        // S.unservedSingleTrips.push_back(S.GlobalTrips.size());
+        SingleTrip tempLunchTrip;
+        S.GlobalTrips.push_back(tempLunchTrip);
+        S.unservedLunchTrips.push_back(S.GlobalTrips.size()-1);
+    }
         cout<<" Id To be inserted is "<<req.rid<<endl;
         int pushback_id=S.unservedSingleTrips.back();
         cout<<"pushback_id=="<<pushback_id<<"------------------------------------<<<<<<"<<endl;
@@ -1018,27 +969,21 @@ void Edited_createSingleTrip(const LoadRequest& req,const Problem& p, Solution& 
             {
                 //inserting only if vehicle type matches
                 int tripAddedNumber=pushback_id;
-                //cout<<"tripAddedNumber=GlobalTrips.size()-1 = "<<tripAddedNumber<<endl;
                 //Try to insert in the current multitrip
                 it->Multi.push_back(tripAddedNumber);//changes done here
                 bool multifeas=MultiTripFeasiblity(*it,p,S);//sending the vehicletrip object to check for feasibility of multitrip
                 if(multifeas)
                 {
-                    //keep the singletrip inside this vehicletrip
-                    // S.GlobalTrips.back().vehicletrip_id=VTid;
                     stemp.vehicletrip_id=it->vehicletrip_id;
-
                     return;
-
                 }
                 //else erase the trip from inside the Multi
                 std::vector<int>& vec = it->Multi; // use shorter name
                 vec.erase(std::remove(vec.begin(), vec.end(), tripAddedNumber), vec.end());
             }
-        // cout<<"VTid2    ====   "<<VTid<<endl;
         }
         cout<<"The request can't be assigned to already present vehicle in VehicleTrips, so new MultiTrip is being created"<<endl;
-        getchar();
+        // getchar();
         stemp.vehicletrip_id=S.MTrips.size();
         VehicleTrips VT;
         VT.TripVehicle=p.vehicles[needed_vehicle_type-1];
@@ -1049,7 +994,6 @@ void Edited_createSingleTrip(const LoadRequest& req,const Problem& p, Solution& 
         if(S.servedLunchTrips.size()==0)
         {
             cout<<"Error in Number of LunchTrips"<<endl;
-            // S.unservedLunchTrips.push_back(S.GlobalTrips.size());
             SingleTrip tempLunchTrip;
             S.GlobalTrips.push_back(tempLunchTrip);
             S.unservedLunchTrips.push_back(S.GlobalTrips.size()-1);
@@ -1061,32 +1005,18 @@ void Edited_createSingleTrip(const LoadRequest& req,const Problem& p, Solution& 
         lunchtrip.depot_late_start_time=VT.TripVehicle.lunch_end_time;
         lunchtrip.trip_duration=VT.TripVehicle.lunch_duration;
         lunchtrip.islunchtrip=true;
-        // stemp.vehicletrip_id=needed_vehicle_type;
         lunchtrip.vehicletrip_id=S.MTrips.size();
         VT.vehicletrip_id=S.MTrips.size();
         S.updateMTrips();
-        // S.GlobalTrips.push_back(lunchtrip);
-        // S.servedLunchTrips.push_back(S.GlobalTrips.size()-1);
-
-        // VT.Multi.push_back(S.GlobalTrips.size()-1);
-        //cout<<"S.GlobalTrips.size()-1"<<S.GlobalTrips.size()-1<<endl;
+      
         S.MTrips.push_back(VT);
         int feas=MultiTripFeasiblity(S.MTrips.back(),p,S);
-        //cout<<S.MTrips.size()<<endl;
         if(feas)
         {
             cout<<S.MTrips.size()<<endl;
-
-        // cout<<"new vehicle trip is assigned and route created"<<endl;
-        // cout<<"bi"<<endl;
-            // cout<<S.GlobalTrips<<endl;
-            // cout<<S.MTrips<<endl;
-            //cout<<"bi"<<endl;
         }
         else
         {
-            // cout<<S.GlobalTrips<<endl;
-            // cout<<S.MTrips<<endl;
             S.displaySolution();
             cout<<"this customer can't be allocated"<<req.rid<< endl;
             exit(0);
@@ -1105,3 +1035,25 @@ void Edited_createSingleTrip(const LoadRequest& req,const Problem& p, Solution& 
 // //SELECT A RANDOM NUMBER
 // //
 // #endif
+  // CostMatrix[][].~custInsertinfo();
+        // getchar();
+        
+        //Here do the calculation and insert the customer, otherwise put in the insertion list;
+        //Subtract the minimum of the row value from the row and 
+
+
+  // S.GlobalTrips.push_back(lunchtrip);
+        // S.servedLunchTrips.push_back(S.GlobalTrips.size()-1);
+
+        // VT.Multi.push_back(S.GlobalTrips.size()-1);
+        //cout<<"S.GlobalTrips.size()-1"<<S.GlobalTrips.size()-1<<endl;
+
+
+        // cout<<"new vehicle trip is assigned and route created"<<endl;
+        // cout<<"bi"<<endl;
+            // cout<<S.GlobalTrips<<endl;
+            // cout<<S.MTrips<<endl;
+            //cout<<"bi"<<endl;
+
+                       // cout<<S.GlobalTrips<<endl;
+            // cout<<S.MTrips<<endl;

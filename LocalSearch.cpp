@@ -46,23 +46,13 @@ bool SearchforAllFalse(const std::vector<bool>& vec)
 
 bool LocalSearch::LocalSearch_operator1(Solution& solution,const Problem& p)
 {
-    // cout<<"LS1error ";
     //purpose is to shift the trip to lower capacity trip if possible
     Solution oldSolution=solution;//check it
-    // solution.displaySolution();
-//  solution.displaySolution();
-//  solution.Calculate_Solution_Cost(p);
     bool mainbreak=false;
-//Problem of singletrip??
-// cout<<"start"<<endl;
     for(auto vehicle_trip_it=solution.MTrips.begin();
         vehicle_trip_it!=solution.MTrips.end() &&mainbreak==false;vehicle_trip_it++)
     {
-        // cout<<"err1 ";
-        // solution.displaySolution();
-        // solution.Calculate_Solution_Cost(p);
         std::vector<int> trips=vehicle_trip_it->Multi;
-        // cout<<"vehicletripsnumber"<<trips<<endl;
         for(auto singletrip_it=trips.begin();
         singletrip_it<trips.end()&&mainbreak==false;singletrip_it++)
         {
@@ -77,12 +67,9 @@ bool LocalSearch::LocalSearch_operator1(Solution& solution,const Problem& p)
                 {
                     if(vehicle_trip_it->TripVehicle.type > second_vehicle_trip_it->TripVehicle.type)
                     {
-                        // cout<<"1 ";
+                       
                     //check first for type difference
                     //this guarantees that type_const constraint won't be violated as we are inserting trip from vt1 to vt2
-                            // if()
-                            // {
-                                //std::cout<<"vehicle_trip_it->TripVehicle.type" <<" second_vehicle_trip_it->TripVehicle.type"<<std::endl;
 
                                 //check the maximum weight capacity
                                 if(tempStrip.max_weight <= second_vehicle_trip_it->TripVehicle.Capacity)//capacity check
@@ -93,59 +80,34 @@ bool LocalSearch::LocalSearch_operator1(Solution& solution,const Problem& p)
 
                                     int tripAddedNumber=*singletrip_it;
                                     second_vehicle_trip_it->Multi.push_back(tripAddedNumber);
-                                    // cout<<"2 ";
 
                                     bool multifeas=MultiTripFeasiblity(*second_vehicle_trip_it,p,solution);
-                                    // cout<<"beforemultifeas"<<endl;
                                     if(multifeas)
                                     {
-                                        // cout<<"3 ";
-                                        // cout<<"aftermultifeas"<<endl;
-
                                         tempStrip.vehicletrip_id=second_vehicle_trip_it->vehicletrip_id;//vehicletripid changed
 
                                         std::vector<int>& vec = vehicle_trip_it->Multi; // using shorter name
                                         vec.erase(std::remove(vec.begin(), vec.end(), tripAddedNumber), vec.end());
                                         if(vec.size()==1)
-                                        {
-                                            // cout<<"extra vehicle trip erased inside Local Operator1+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++vehicleerased"<<endl;
-                                            // // solution.MTrips.erase(solution.MTrips.begin()+tempStrip.vehicletrip_id);//have to update the solution also and also the removed singletrip vector
-                                            // solution.MTrips.erase(vehicle_trip_it);//have to update the solution also and also the removed singletrip vector
-                                            // // getchar();
-                                            // cout<<"hi1"<<endl;
-                                            // solution.updateMTrips();
-                                            // cout<<"hi2"<<endl;
-
+                                        {                                        
                                             // mainbreak==true;
                                             // return true;
-
-
-                                                                                        cout<<"extra vehicle trip erased inside Local Operator1+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++vehicleerased"<<endl;
+                                            cout<<"extra vehicle trip erased inside Local Operator1+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++vehicleerased"<<endl;
                                             int temp=vec[0];
                                             // getchar();
                                             solution.servedLunchTrips.erase(std::remove(solution.servedLunchTrips.begin(), solution.servedLunchTrips.end(),//next line
                                                                                         temp), solution.servedLunchTrips.end());
-                                            cout<<"hi"<<endl;
                                             solution.unservedLunchTrips.push_back(temp);
                                             // solution.MTrips.erase(solution.MTrips.begin()+tempStrip.vehicletrip_id);//have to update the solution also and also the removed singletrip vector
                                             solution.MTrips.erase(vehicle_trip_it);//have to update the solution also and also the removed singletrip vector
                                             // getchar();
-                                            // cout<<"hi1"<<endl;
                                             solution.updateMTrips();
-                                            // cout<<"hi2"<<endl;
 
                                             mainbreak==true;
                                             return true;
                             
                                         }
 
-
-
-
-                                        //distance display
-
-                                        // vehicle_trip_it->distance_of_vehicletrip-=tempStrip.trip_distance;
-                                        // second_vehicle_trip_it->distance_of_vehicletrip=+tempStrip.trip_distance;
                                         cout<<"tripAddedNumber"<<tripAddedNumber<<endl;
                                          cout<<"first_vehicle_trip_it->vehicletrip_id=="<<vehicle_trip_it->vehicletrip_id<<std::endl;
                                         cout<<"second_vehicle_trip_it->vehicletrip_id=="<<second_vehicle_trip_it->vehicletrip_id<<std::endl;
@@ -166,20 +128,11 @@ bool LocalSearch::LocalSearch_operator1(Solution& solution,const Problem& p)
                                     }
                                         
                                 }
-                            // }
-                            // else if()
-                            // {
-
-                            // }
-                            // else
-                            // {
-
-                            // }
+                        
                     }
                 else if(vehicle_trip_it->Multi.size()<=second_vehicle_trip_it->Multi.size()&&vehicle_trip_it->TripVehicle.type == second_vehicle_trip_it->TripVehicle.type)
                     {
-                        // cout<<"4 ";
-                        // cout<<"vehicle_trip_it->TripVehicle.type == second_vehicle_trip_it->TripVehicle.type= "<<vehicle_trip_it->TripVehicle.type<<endl;
+                
                     //check first for type difference
                     //this guarantees that type_const constraint won't be violated as we are inserting trip from vt1 to vt2
                             // if()
@@ -189,11 +142,7 @@ bool LocalSearch::LocalSearch_operator1(Solution& solution,const Problem& p)
                                 //check the maximum weight capacity
                                 if(tempStrip.max_weight <= second_vehicle_trip_it->TripVehicle.Capacity)//capacity check
                                 {
-                                    // cout<<"hi"<<endl;
-                                    // std::cout<<"first vehicle totaltrip cost-pre "<<vehicle_trip_it->Calculate_Cost_of_MultiTrip(p,&solution)<<std::endl;
-                                    // std::cout<<"second vehicle totaltrip cost-pre "<<second_vehicle_trip_it->Calculate_Cost_of_MultiTrip(p,&solution)<<std::endl;
-
-
+                                
                                     int tripAddedNumber=*singletrip_it;
                                     second_vehicle_trip_it->Multi.push_back(tripAddedNumber);
                                     // cout<<"5 ";
@@ -210,7 +159,7 @@ bool LocalSearch::LocalSearch_operator1(Solution& solution,const Problem& p)
                                         vec.erase(std::remove(vec.begin(), vec.end(), tripAddedNumber), vec.end());
                                         if(vec.size()==1)
                                         {
-                                            solution.displaySolution();
+                                            // solution.displaySolution();
                                             cout<<"extra vehicle trip erased inside Local Operator1+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++vehicleerased"<<endl;
                                             int temp=vec[0];
                                             // getchar();
@@ -229,12 +178,6 @@ bool LocalSearch::LocalSearch_operator1(Solution& solution,const Problem& p)
                                             return true;
                             
                                         }
-
-
-
-
-                                        //distance display
-
                                         // vehicle_trip_it->distance_of_vehicletrip-=tempStrip.trip_distance;
                                         // second_vehicle_trip_it->distance_of_vehicletrip=+tempStrip.trip_distance;
                                         cout<<"tripAddedNumber"<<tripAddedNumber<<endl;
@@ -244,9 +187,7 @@ bool LocalSearch::LocalSearch_operator1(Solution& solution,const Problem& p)
                                         cout<<"second vehicle totaltrip cost-post "<<second_vehicle_trip_it->Calculate_Cost_of_MultiTrip(p,&solution)<<std::endl;
                                         std::cout<<endl;
                                         // cout<<tempStrip.cust_id;
-                                        return true;
-                                        
-
+                                        return true;                                    
                                     }
                                     else
                                     {
@@ -280,6 +221,7 @@ bool LocalSearch::LocalSearch_operator2(Solution& solution,const Problem& p)//a 
     int RandomTripNumber;
     int customer_id;
     int iteration=0;
+    double fixedCost=100000;
     while(iteration<p.num_of_request)
     {
         // cout << "In LS 2 while loop" << endl;
@@ -316,7 +258,8 @@ bool LocalSearch::LocalSearch_operator2(Solution& solution,const Problem& p)//a 
                 cost+=((new_traveldistance-old_traveldistance)*solution.MTrips[iter->vehicletrip_id].TripVehicle.variable_cost);
                 if(iter->cust_id.size()==2 &&solution.MTrips[iter->vehicletrip_id].Multi.size()==2)
                 {
-                    cost-=solution.MTrips[iter->vehicletrip_id].TripVehicle.fixed_cost;
+                    fixedCost=solution.MTrips[iter->vehicletrip_id].TripVehicle.fixed_cost;
+                    cost-=fixedCost;
                 }
                 // cout<<"cost == "<<cost<<endl;
                 if(cost<0)
@@ -347,7 +290,7 @@ bool LocalSearch::LocalSearch_operator2(Solution& solution,const Problem& p)//a 
         return false;
     }
     int request_index=solution.unrouted_cust_request_id[rand()%solution.unrouted_cust_request_id.size()];//contain index of request in request
-    bool inserted=BestInsertPlace(request_index, p, solution, cost,m_LS2_bookkeep);
+    bool inserted=BestInsertPlace(request_index, p, solution, cost,m_LS2_bookkeep, fixedCost);
     cout<<"iter->custid.size()=="<<iter->cust_id.size()<<endl;
     if(iter->cust_id.size()==2&&inserted)
     {
@@ -371,14 +314,13 @@ bool LocalSearch::LocalSearch_operator2(Solution& solution,const Problem& p)//a 
             
             // solution.MTrips.erase(std::remove(solution.MTrips.begin(), solution.MTrips.end(),solution.MTrips[iter->vehicletrip_id]), solution.MTrips.end());//have to update the solution also;
         }
-        // solution.unallocatedGlobalID.pushback
     }
     if(!inserted)
     {
         m_LS2_bookkeep[request_index]=1;
     }
     
-    solution.displaySolution();
+    // solution.displaySolution();
     solution.Calculate_Solution_Cost(p);
     // cout<<"founderrorfirst "<<endl;    
     if(Sbest.total_solution_cost<solution.total_solution_cost)
@@ -404,13 +346,10 @@ bool LocalSearch :: LocalSearch_operator3(Solution& solution,const Problem& p)//
         // cout<<"LS3"<<"\n";
         std::vector<SingleTrip>::iterator iter1;
         std::vector<SingleTrip>::iterator iter2;
-        // std::vector<VehicleTrips>::iterator vtrip1;
-        // std::vector<VehicleTrips>::iterator vtrip2;
+
         LoadRequest req1,req2;
-        // unsigned GlobalTrip_size=solution.GlobalTrips.size();
         unsigned TrueSingleTrip_size=solution.servedSingleTrips.size();
-        // cout<<"singletrip id"<<solution.servedSingleTrips;
-        // cout<<"Total trips="<<TrueSingleTrip_size<<endl;
+
         double cost=0.00;//vehicle removed(if)+customerunassigned+tripdistanceremoved
         int static seed=0;
         int RandomTripNumber1,RandomTripNumber2;
@@ -419,26 +358,15 @@ bool LocalSearch :: LocalSearch_operator3(Solution& solution,const Problem& p)//
         int iteration=0;
         while (iteration<100)
         {
-            //find first trip and feasibility
-            //find second trip and feasibility
-            //check cross vehicle feasibility
-            //if feasible then find erase from both the trips
-            //then insert 1 into trip 2 and 2 into trip 1 and check their feasibility(multitrip duration etc)
 
-            // cout<<", ";
-            // cout<<"1"<<endl;
+
+
             RandomTripNumber1=rand()%TrueSingleTrip_size;
             RandomTripNumber1=solution.servedSingleTrips[RandomTripNumber1];
-            // RandomTripNumber2=rand()%TrueSingleTrip_size;
-            // RandomTripNumber2=solution.servedSingleTrips[RandomTripNumber2];
-
-
-            // cout<<"randomtripnumber="<<RandomTripNumber1<<endl;//debug
-
+            
             /* iter1 represent the current singletrip which customer we want to remove*/
             iter1 = std::next(solution.GlobalTrips.begin(), RandomTripNumber1);//solution.GlobalTrips[RandomNumber1].islunchtrip==0 continue
             SingleTrip temps1=*iter1;
-            // cout<<"2"<<endl;
 
             if(iter1->cust_id.size()<=2)//
             {
@@ -467,10 +395,6 @@ bool LocalSearch :: LocalSearch_operator3(Solution& solution,const Problem& p)//
             int remove_id_location2=(rand()%(iter2->cust_id.size()-2))+1;
             customer_id2=iter2->cust_id[remove_id_location2];//customer_id is the pickup/delivery id
             customer_id2=p.getRequestID(customer_id2);//customer_id contain the index of request_id
-            // cout<<"4"<<endl;
-
-            // cout<<"remove_id_location1=="<<remove_id_location1<<endl;
-            // cout<<"remove_id_location1=="<<remove_id_location2<<endl;
 
 
 
@@ -508,11 +432,6 @@ bool LocalSearch :: LocalSearch_operator3(Solution& solution,const Problem& p)//
                     continue;
                 }
                 
-                // compare trip distance;
-
-                //Add customer_id2 in iter1
-                //Add customer_id1 in iter2
-                //if sum of both comes out to be negative return true otherwise false
             }
             else
             {
@@ -562,17 +481,16 @@ void LocalSearch::LocalOpt( Solution& solution, const Problem& p)
          if(i%2==0)  
          {
 
-            // cout<<"localsearch2"<<endl;
             while(LocalSearch_operator2( solution,  p))
             {
-                // cout<<" pp2 ";
+                cout<<" pp2 ";
                 for(unsigned j=0;j<p.num_of_request;j++)
                 {
                     m_LS2_bookkeep[j] = 0;
                 }
                 unsuccesful_attempt = 0;
             }
-            // cout<< "LS2 ended" <<" unsuccessful attempt= "<<unsuccesful_attempt<<endl;
+            cout<< "LS2 ended" <<" unsuccessful attempt= "<<unsuccesful_attempt<<endl;
             unsuccesful_attempt++;
             // if(LocalSearch_operator1 ( solution, p ) )
             // {
@@ -583,10 +501,8 @@ void LocalSearch::LocalOpt( Solution& solution, const Problem& p)
             //     }
             // }
          }
-    // getchar();
-        // }
     
-        // cout<<"after LS1"<<endl;
+        // cout<<"before LS3"<<endl;
         if(i%2==1)
         {
             // cout<<"inside LocalSearch3"<<endl;
@@ -595,7 +511,7 @@ void LocalSearch::LocalOpt( Solution& solution, const Problem& p)
                 // cout<<" pp ";
                 for(unsigned j=0;j<p.num_of_request;j++)
                 {
-                // cout<<" pp3 ";
+                cout<<" pp3 ";
 
                     m_LS2_bookkeep[j]=0;
                 }
