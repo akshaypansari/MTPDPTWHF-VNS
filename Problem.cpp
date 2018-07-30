@@ -310,13 +310,13 @@ void Problem::SortRequest()
     int totalrequests=num_of_request;    
     for(int i=0;i<num_of_request;i++)
     {
-        // Minduration M;
-        // int index= rand()%totalrequests;    
-        // Min[i].id=Randomnumber[index];
-        // totalrequests--;
-        // Randomnumber.erase(Randomnumber.begin()+index);
-        Min[i].id=requests[i].rid;//id has the customer real id number and not index
-        Min[i].duration=std::min(requests[i].pickup.end_time-requests[i].pickup.start_time,requests[i].delivery.end_time-requests[i].delivery.start_time);
+        Minduration M;
+        int index= rand()%totalrequests;    
+        Min[i].id=Randomnumber[index];
+        totalrequests--;
+        Randomnumber.erase(Randomnumber.begin()+index);
+        // Min[i].id=requests[i].rid;//id has the customer real id number and not index
+        // Min[i].duration=std::min(requests[i].pickup.end_time-requests[i].pickup.start_time,requests[i].delivery.end_time-requests[i].delivery.start_time);
     }
 //   cout<<"sortreq"<<endl;
 //   cout<<"sr2"<<endl;

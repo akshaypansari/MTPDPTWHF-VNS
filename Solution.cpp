@@ -148,10 +148,10 @@ void Solution::displaySolution()
         for(auto j:MTrips[i].Multi)
         {
             //we can also make a display function for singletrip
-            k++;      
             SingleTrip& temps=GlobalTrips[j];
             if(!temps.islunchtrip)
             {
+                k++;                  
                 cout<<"SingleTripNumber="<<j<<" ";
                 cout<<"This is the Trip Number "<<k;
                 cout<<temps.cust_id<<"     ";
@@ -173,6 +173,8 @@ void Solution::displaySolution()
         }
         cout<<endl;
     }
+    cout<<"ServedSingleTripID"<<servedSingleTrips<<" UnservedSingleTripID"<<unservedSingleTrips<<endl;
+    cout<<"ServedLunchTripID = "<<servedLunchTrips << " unservedLunch Trip = " <<unservedLunchTrips<<endl;
     
 }
 

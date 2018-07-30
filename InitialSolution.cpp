@@ -423,6 +423,8 @@ bool MultiTripFeasiblity(VehicleTrips& VT,Problem &p, Solution& S)//this contain
     //cout<<"old VT.multi.size()"<< VT.Multi.size()<<endl;   
     //std::sort(VT.Multi.begin(),VT.Multi.end(), compareTripEarlyStartTime_duration);
 
+        int static count=0;
+        count++;
         std::sort(VT.Multi.begin(),VT.Multi.end(),[S](int a, int b)->bool {
             // Lambda function
          //   s->GlobalTrips
@@ -447,7 +449,7 @@ bool MultiTripFeasiblity(VehicleTrips& VT,Problem &p, Solution& S)//this contain
         //cout<<"new loop ="<<*it<<endl;
         //cout<<"GlobalTrips[*(it-1)].trip_duration"<<S.GlobalTrips[*(it-1)].trip_duration<<endl;
         //cout<<"oldtemp"<<temp<<endl;
-        temp=max(temp+S.GlobalTrips[*(it-1)].trip_duration+VT.TripVehicle.lunch_duration*!(S.GlobalTrips[*(it-1)].islunchtrip),
+        temp=max(temp+S.GlobalTrips[*(it-1)].trip_duration+p.rest_time*!(S.GlobalTrips[*(it-1)].islunchtrip||S.GlobalTrips[*(it)].islunchtrip),//assumption lunch break time is more than disinfectiontime
                             S.GlobalTrips[*it].depot_early_start_time );
        // cout<<"newtemp"<<temp<<endl<<"GlobalTrips[*it].depot_late_start_time"<<S.GlobalTrips[*it].depot_late_start_time<<endl;
         
@@ -456,6 +458,7 @@ bool MultiTripFeasiblity(VehicleTrips& VT,Problem &p, Solution& S)//this contain
             return false;
         }
     }
+    cout<<"coutnt "<<count<<endl;
     return true;
 
 }
@@ -640,3 +643,46 @@ void ShrinkTrip(SingleTrip& stemp,Problem& p, Solution& S)
 //     }
 // } no need of it as of now
 
+// bool DynamicProgramming(VehicleTrips& VT,Problem &p, Solution& S)//this contains total trip of single variable
+// {
+//   //  cout<<"Yout are now in MultiTripFeasiblity"<<endl;
+//     // sort multitrip on the basis of trip starttime window and then on duration;
+//     //cout<<"old VT.multi.size()"<< VT.Multi.size()<<endl;   
+//     //std::sort(VT.Multi.begin(),VT.Multi.end(), compareTripEarlyStartTime_duration);
+
+//         std::sort(VT.Multi.begin(),VT.Multi.end(),[S](int a, int b)->bool {
+//             // Lambda function
+//          //   s->GlobalTrips
+//         if(S.GlobalTrips[a].depot_early_start_time<S.GlobalTrips[b].depot_early_start_time)
+//             return true;
+//         else if(S.GlobalTrips[a].depot_early_start_time==S.GlobalTrips[b].depot_early_start_time
+//                 &&  S.GlobalTrips[a].trip_duration<S.GlobalTrips[b].trip_duration)
+//             return true;
+//         return false;
+//         });
+
+
+
+//     //cout<<"newAfter sorting VT.multi.size()"<< VT.Multi.size()<<endl;   
+
+//    // cout<<"S.GlobalTrips.size()"<<S.GlobalTrips.size()<<endl;
+//     double temp;
+//     temp= S.GlobalTrips[ VT.Multi[0]].depot_early_start_time;
+//    // cout<<"GlobalTrips[ VT.Multi[0]].depot_early_start_time "<<S.GlobalTrips[ VT.Multi[0]].depot_early_start_time<<endl;
+//     for(auto it=VT.Multi.begin()+1;it!=VT.Multi.end();it++)
+//     {
+//         //cout<<"new loop ="<<*it<<endl;
+//         //cout<<"GlobalTrips[*(it-1)].trip_duration"<<S.GlobalTrips[*(it-1)].trip_duration<<endl;
+//         //cout<<"oldtemp"<<temp<<endl;
+//         temp=max(temp+S.GlobalTrips[*(it-1)].trip_duration+p.rest_time*!(S.GlobalTrips[*(it-1)].islunchtrip||S.GlobalTrips[*(it)].islunchtrip),//assumption lunch break time is more than disinfectiontime
+//                             S.GlobalTrips[*it].depot_early_start_time );
+//        // cout<<"newtemp"<<temp<<endl<<"GlobalTrips[*it].depot_late_start_time"<<S.GlobalTrips[*it].depot_late_start_time<<endl;
+        
+//         if( temp>S.GlobalTrips[*it].depot_late_start_time)
+//         {
+//             return false;
+//         }
+//     }
+//     return true;
+
+// }

@@ -81,22 +81,52 @@ void Run::RunMTPDPTWHF(std::string filename, int seed)
     cout<<"servedSingleTrips="<<Sbest.servedSingleTrips.size()<<"unservedSingleTrips="<<Sbest.unservedSingleTrips.size()<<"servedLunchTrips="<<Sbest.servedLunchTrips.size()<<"unservedLunchTrips="<<Sbest.unservedLunchTrips.size()<<endl;
     cout<<"globaltrips size="<<Sbest.GlobalTrips.size()<<endl;
     // cout<<"second run----------------------------------------------------------------------------------------------------------------------------------------------"<<endl;
-    // getchar();
+    getchar();
 
     // LS.LocalOpt(Sbest,p);
     // Sbest.displaySolution();
     // Sbest.Calculate_Solution_Cost(p);
     cout<<"solution= "<<endl;
     Sbest.Calculate_Solution_Cost(p);
-    VNS V1;
-    V1.Perturb(Sbest,p,8);
-    // LocalSearch LS;
-    LS.LocalOpt(Sbest,p);
-    Sbest.displaySolution();
-    Sbest.Calculate_Solution_Cost(p);
-    cout<<"servedSingleTrips="<<Sbest.servedSingleTrips.size()<<"unservedSingleTrips="<<Sbest.unservedSingleTrips.size()<<"servedLunchTrips="<<Sbest.servedLunchTrips.size()<<"unservedLunchTrips="<<Sbest.unservedLunchTrips.size()<<endl;
-    cout<<"globaltrips size="<<Sbest.GlobalTrips.size()<<endl;
-    getchar();
+    Solution SbestGlobal=Sbest;
+    int iteration=0;
+    int numbertobedeleted=5;
+    std::vector<int> bestdeletednum;
+    while(iteration<100&&numbertobedeleted<p.num_of_request/3)
+    {
+        cout<<"iteration"<<iteration<<endl;
+    // Solution Stempbest=Sbest;
+        VNS V1;
+        V1.Perturb(Sbest,p,numbertobedeleted);
+        // LocalSearch LS;
+        LS.LocalOpt(Sbest,p);
+        Sbest.displaySolution();
+        Sbest.Calculate_Solution_Cost(p);
+        if(Sbest.total_solution_cost<SbestGlobal.total_solution_cost)
+        {
+            bestdeletednum.push_back(numbertobedeleted);
+            SbestGlobal=Sbest;
+            numbertobedeleted=5;
+            iteration=0;
+            cout<<"got better solution"<<endl;
+        }
+        else
+        {
+            cout<<"else perturb"<<endl;
+            Sbest=SbestGlobal;
+            numbertobedeleted++;
+            iteration++;
+        }
+        cout<<"servedSingleTrips="<<Sbest.servedSingleTrips.size()<<"unservedSingleTrips="<<Sbest.unservedSingleTrips.size()<<"servedLunchTrips="<<Sbest.servedLunchTrips.size()<<"unservedLunchTrips="<<Sbest.unservedLunchTrips.size()<<endl;
+        cout<<"globaltrips size="<<Sbest.GlobalTrips.size()<<endl;
+        // getchar();
+    }
+    cout<<"iteration == "<<iteration<<" numbertobedeleted=="<<numbertobedeleted<<endl;
+    cout<<"best iteration numbers in the vector form"<<bestdeletednum<<"-----------------------------"<<endl;
+    SbestGlobal.displaySolution();
+    SbestGlobal.Calculate_Solution_Cost(p);
+
+    
 
 
         

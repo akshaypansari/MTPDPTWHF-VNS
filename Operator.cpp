@@ -222,7 +222,7 @@ bool MultiTripFeasiblity(VehicleTrips& VT,const Problem& p, Solution& S)//this c
         //cout<<"new loop ="<<*it<<endl;
         //cout<<"GlobalTrips[*(it-1)].trip_duration"<<S.GlobalTrips[*(it-1)].trip_duration<<endl;
         //cout<<"oldtemp"<<temp<<endl;
-        temp=max(temp+S.GlobalTrips[*(it-1)].trip_duration+VT.TripVehicle.lunch_duration *!(S.GlobalTrips[*(it-1)].islunchtrip),
+        temp=max(temp+S.GlobalTrips[*(it-1)].trip_duration+p.rest_time *!(S.GlobalTrips[*(it-1)].islunchtrip),
                             S.GlobalTrips[*it].depot_early_start_time );
     //    cout<<"newtemp"<<temp<<endl<<"GlobalTrips[*it].depot_late_start_time"<<S.GlobalTrips[*it].depot_late_start_time<<endl;
         
@@ -815,7 +815,7 @@ void AddCustomers(const Problem& p, Solution& solution)
                 SingleTrip& tempStrip=solution.GlobalTrips[solution.servedSingleTrips[ trip_id]];
                 if(tempStrip.cust_id.size()==2)
                 {
-                    cout<<"Error::wrong cust_id_size(if new route not added"<<endl;
+                    cout<<"Error::wrong cust_id_size(if new route not added)"<<endl;
                     std::exit(0);
                 }
                 VehicleTrips& vtemp=solution.MTrips[tempStrip.vehicletrip_id];
@@ -899,7 +899,7 @@ void AddCustomers(const Problem& p, Solution& solution)
             }
             cout<<endl;
         }
-        getchar();
+        // getchar();
         std::vector<double> RegretMatrixSum;
         RegretMatrixSum.resize(solution.unrouted_cust_request_id.size());
         for(int unserved_id=0;unserved_id<solution.unrouted_cust_request_id.size();unserved_id++)
@@ -926,7 +926,7 @@ void AddCustomers(const Problem& p, Solution& solution)
             }
         }
         //Find the minimum in that particular row
-        int tripmincost_id;
+        int tripmincost_id=0;
         double addedcost=infinity;
         for(auto trip_id=0;trip_id!=solution.servedSingleTrips.size();trip_id++)
         {
@@ -936,7 +936,7 @@ void AddCustomers(const Problem& p, Solution& solution)
                 addedcost=CostMatrix[maxRegret_custID][trip_id].cost;
             }
         }
-        cout<<"maxRegretCustId::"<<p.requests[solution.unrouted_cust_request_id[ maxRegret_custID]].pickup.id<<"trip_id::"<<tripmincost_id<<endl;
+        cout<<"maxRegretCust Real Id::"<<p.requests[solution.unrouted_cust_request_id[ maxRegret_custID]].pickup.id<<"trip_id::"<<tripmincost_id<<endl;
         if(CostMatrix[maxRegret_custID][tripmincost_id].cost==infinity)
         {
             //Insert it in new route;
@@ -954,6 +954,7 @@ void AddCustomers(const Problem& p, Solution& solution)
             // std::exit(0);
             
         }
+        cout<<"If all numbeer are not infinity"<<endl;
         CostMatrix[maxRegret_custID][tripmincost_id].Display();
         custInsertinfo temp=CostMatrix[maxRegret_custID][tripmincost_id];
         // solution.displaySolution();
@@ -963,9 +964,10 @@ void AddCustomers(const Problem& p, Solution& solution)
                                                                     solution.unrouted_cust_request_id[ maxRegret_custID]), solution.unrouted_cust_request_id.end());
         solution.displaySolution();
         solution.Calculate_Solution_Cost(p);
+        cout<<"hierror"<<endl;
 
         // CostMatrix[][].~custInsertinfo();
-        getchar();
+        // getchar();
         
         //Here do the calculation and insert the customer, otherwise put in the insertion list;
         //Subtract the minimum of the row value from the row and 
@@ -975,9 +977,18 @@ void AddCustomers(const Problem& p, Solution& solution)
 
 void Edited_createSingleTrip(const LoadRequest& req,const Problem& p, Solution& S/*,int pushback_id*/)
 {
-    if(S.unservedSingleTrips.size()>=1)
+    if(S.unservedSingleTrips.size()==0)
     {
+        cout<<"Error in Number of LunchTrips"<<endl;
+        // S.unservedSingleTrips.push_back(S.GlobalTrips.size());
+        SingleTrip tempSingleTrip;
+        S.GlobalTrips.push_back(tempSingleTrip);
+        S.unservedSingleTrips.push_back(S.GlobalTrips.size()-1);
+    }
+
+        cout<<" Id To be inserted is "<<req.rid<<endl;
         int pushback_id=S.unservedSingleTrips.back();
+        cout<<"pushback_id=="<<pushback_id<<"------------------------------------<<<<<<"<<endl;
         S.unservedSingleTrips.pop_back();
         S.servedSingleTrips.push_back(pushback_id);
         S.GlobalTrips[pushback_id].Clear();//this undo that trip back to initial position
@@ -1028,13 +1039,21 @@ void Edited_createSingleTrip(const LoadRequest& req,const Problem& p, Solution& 
         }
         cout<<"The request can't be assigned to already present vehicle in VehicleTrips, so new MultiTrip is being created"<<endl;
         getchar();
-        S.GlobalTrips.back().vehicletrip_id=S.MTrips.size();
+        stemp.vehicletrip_id=S.MTrips.size();
         VehicleTrips VT;
         VT.TripVehicle=p.vehicles[needed_vehicle_type-1];
         //GlobalTrips.size() gives the total element and '-1' give the index of the last element entered
         VT.Multi.push_back(pushback_id);//to get last element entered index
         
         SingleTrip &lunchtrip=S.GlobalTrips[S.unservedLunchTrips.back()];
+        if(S.servedLunchTrips.size()==0)
+        {
+            cout<<"Error in Number of LunchTrips"<<endl;
+            // S.unservedLunchTrips.push_back(S.GlobalTrips.size());
+            SingleTrip tempLunchTrip;
+            S.GlobalTrips.push_back(tempLunchTrip);
+            S.unservedLunchTrips.push_back(S.GlobalTrips.size()-1);
+        }
         S.servedLunchTrips.push_back(S.unservedLunchTrips.back());
         VT.Multi.push_back(S.unservedLunchTrips.back());
         S.unservedLunchTrips.pop_back();
@@ -1042,8 +1061,10 @@ void Edited_createSingleTrip(const LoadRequest& req,const Problem& p, Solution& 
         lunchtrip.depot_late_start_time=VT.TripVehicle.lunch_end_time;
         lunchtrip.trip_duration=VT.TripVehicle.lunch_duration;
         lunchtrip.islunchtrip=true;
-        lunchtrip.vehicletrip_id=needed_vehicle_type;
-        VT.vehicletrip_id=needed_vehicle_type;
+        // stemp.vehicletrip_id=needed_vehicle_type;
+        lunchtrip.vehicletrip_id=S.MTrips.size();
+        VT.vehicletrip_id=S.MTrips.size();
+        S.updateMTrips();
         // S.GlobalTrips.push_back(lunchtrip);
         // S.servedLunchTrips.push_back(S.GlobalTrips.size()-1);
 
@@ -1055,6 +1076,7 @@ void Edited_createSingleTrip(const LoadRequest& req,const Problem& p, Solution& 
         if(feas)
         {
             cout<<S.MTrips.size()<<endl;
+
         // cout<<"new vehicle trip is assigned and route created"<<endl;
         // cout<<"bi"<<endl;
             // cout<<S.GlobalTrips<<endl;
@@ -1071,12 +1093,12 @@ void Edited_createSingleTrip(const LoadRequest& req,const Problem& p, Solution& 
         }
         
     }
-    else
-    {
-        cout<<"We have to make a new trip altogether ::Edited Insert Customer"<<endl;
-        getchar();
-    }
-}
+    // else
+    // {
+    //     cout<<"We have to make a new trip altogether ::Edited Insert Customer"<<endl;
+    //     getchar();
+    // }
+
 // #ifndef OPERATOR_H_
 // #define OPERATOR_H_
 
